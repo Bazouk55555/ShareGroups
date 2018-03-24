@@ -1,0 +1,77 @@
+package com.application.bazouk.spymyfriends.sqliteservices.presencegroup;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
+public class PresenceGroupBaseDAO {
+
+    private SQLiteDatabase mDb = null;
+    private DatabasePresenceGroupHandler databaseHandler = null;
+
+    public PresenceGroupBaseDAO(Context pContext) {
+        this.databaseHandler = new DatabasePresenceGroupHandler(pContext);
+    }
+
+    public SQLiteDatabase open() {
+        mDb = databaseHandler.getWritableDatabase();
+        return mDb;
+    }
+
+    public void close() {
+        mDb.close();
+    }
+
+    public void addGroup(PGroup presenceGroup)
+    {
+        ContentValues value = new ContentValues();
+        value.put(DatabasePresenceGroupHandler.ID_KEY,presenceGroup.getId());
+        //value.put(DatabasePresenceGroupHandler.USERNAME, presenceGroup.getUsername());
+        mDb.insert(DatabasePresenceGroupHandler.TABLE_GROUP, null, value);
+    }
+
+    private String getPasswordFromUsername(String username)
+    {
+        /*String password = "";
+        String query = "select "+ DatabaseConnectionHandler.PASSWORD +" from " + DatabaseConnectionHandler.TABLE_CONNECTION+ " WHERE "
+                + DatabaseConnectionHandler.USERNAME + "=?";
+        Cursor c = mDb.rawQuery(query, new String[]{username});
+        if(c.getCount()==0)
+        {
+            c.close();
+            return password;
+        }
+        while(c.moveToNext()) {
+            password = c.getString(0);
+        }
+        c.close();
+        return password;*/
+        return "";
+    }
+
+    public void add(String username, String password, String first_name, String last_name)
+    {
+        /*ContentValues value = new ContentValues();
+        value.put(DatabaseConnectionHandler.USERNAME,username);
+        value.put(DatabaseConnectionHandler.PASSWORD,password);
+        value.put(DatabaseConnectionHandler.FIRST_NAME,first_name);
+        value.put(DatabaseConnectionHandler.LAST_NAME,last_name);
+        mDb.insert(DatabaseConnectionHandler.TABLE_CONNECTION, null, value);*/
+    }
+
+    public String [] getFirstAndLastName(String username)
+    {
+        /*String [] firstAndLastName = new String [2];
+        String query = "select "+ DatabaseConnectionHandler.FIRST_NAME+","+ DatabaseConnectionHandler.LAST_NAME +" from " + DatabaseConnectionHandler.TABLE_CONNECTION+ " WHERE "
+                + DatabaseConnectionHandler.USERNAME + "=?";
+        Cursor c = mDb.rawQuery(query, new String[]{username});
+        while(c.moveToNext()) {
+            firstAndLastName[0] = c.getString(0);
+            firstAndLastName[1] = c.getString(1);
+        }
+        c.close();
+        return firstAndLastName;*/
+        return new String [2];
+    }
+
+}
