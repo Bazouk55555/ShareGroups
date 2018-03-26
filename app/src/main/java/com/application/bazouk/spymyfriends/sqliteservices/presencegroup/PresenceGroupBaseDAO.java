@@ -2,7 +2,11 @@ package com.application.bazouk.spymyfriends.sqliteservices.presencegroup;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PresenceGroupBaseDAO {
 
@@ -24,54 +28,43 @@ public class PresenceGroupBaseDAO {
 
     public void addGroup(PGroup presenceGroup)
     {
+        int id = presenceGroup.getId();
+        String nameOfTheGroup = presenceGroup.getNameOfTheGroup();
+        for(String username: presenceGroup.getMapOfUsernames().keySet()) {
+            ContentValues value = new ContentValues();
+            value.put(DatabasePresenceGroupHandler.ID_GROUP, id);
+            value.put(DatabasePresenceGroupHandler.NAME_OF_THE_GROUP, nameOfTheGroup);
+            value.put(DatabasePresenceGroupHandler.USERNAME, username);
+            value.put(DatabasePresenceGroupHandler.IS_PRESENT, presenceGroup.getMapOfUsernames().get(username)?1:0);
+            mDb.insert(DatabasePresenceGroupHandler.TABLE_GROUP, null, value);
+        }
+    }
+
+    public void addMember(int id, String nameOfTheGroup, String username, boolean isPresent)
+    {
         ContentValues value = new ContentValues();
-        value.put(DatabasePresenceGroupHandler.ID_KEY,presenceGroup.getId());
-        //value.put(DatabasePresenceGroupHandler.USERNAME, presenceGroup.getUsername());
+        value.put(DatabasePresenceGroupHandler.ID_GROUP, id);
+        value.put(DatabasePresenceGroupHandler.NAME_OF_THE_GROUP, nameOfTheGroup);
+        value.put(DatabasePresenceGroupHandler.USERNAME, username);
+        value.put(DatabasePresenceGroupHandler.IS_PRESENT, 0);
         mDb.insert(DatabasePresenceGroupHandler.TABLE_GROUP, null, value);
     }
 
-    private String getPasswordFromUsername(String username)
+    public void changePresence(int id,String username, boolean isPresent)
     {
-        /*String password = "";
-        String query = "select "+ DatabaseConnectionHandler.PASSWORD +" from " + DatabaseConnectionHandler.TABLE_CONNECTION+ " WHERE "
-                + DatabaseConnectionHandler.USERNAME + "=?";
-        Cursor c = mDb.rawQuery(query, new String[]{username});
-        if(c.getCount()==0)
-        {
-            c.close();
-            return password;
-        }
+
+    }
+
+    public List<String> getUsernames(int id)
+    {
+        String query = "select "+ DatabasePresenceGroupHandler.USERNAME +" from " + DatabasePresenceGroupHandler.TABLE_GROUP+ " WHERE "
+                + DatabasePresenceGroupHandler.ID_GROUP + "=?";
+        Cursor c = mDb.rawQuery(query, new String[]{Integer.toString(id)});
+        List<String> usernames = new ArrayList<>();
         while(c.moveToNext()) {
-            password = c.getString(0);
+            usernames.add(c.getString(0));
         }
         c.close();
-        return password;*/
-        return "";
+        return usernames;
     }
-
-    public void add(String username, String password, String first_name, String last_name)
-    {
-        /*ContentValues value = new ContentValues();
-        value.put(DatabaseConnectionHandler.USERNAME,username);
-        value.put(DatabaseConnectionHandler.PASSWORD,password);
-        value.put(DatabaseConnectionHandler.FIRST_NAME,first_name);
-        value.put(DatabaseConnectionHandler.LAST_NAME,last_name);
-        mDb.insert(DatabaseConnectionHandler.TABLE_CONNECTION, null, value);*/
-    }
-
-    public String [] getFirstAndLastName(String username)
-    {
-        /*String [] firstAndLastName = new String [2];
-        String query = "select "+ DatabaseConnectionHandler.FIRST_NAME+","+ DatabaseConnectionHandler.LAST_NAME +" from " + DatabaseConnectionHandler.TABLE_CONNECTION+ " WHERE "
-                + DatabaseConnectionHandler.USERNAME + "=?";
-        Cursor c = mDb.rawQuery(query, new String[]{username});
-        while(c.moveToNext()) {
-            firstAndLastName[0] = c.getString(0);
-            firstAndLastName[1] = c.getString(1);
-        }
-        c.close();
-        return firstAndLastName;*/
-        return new String [2];
-    }
-
 }

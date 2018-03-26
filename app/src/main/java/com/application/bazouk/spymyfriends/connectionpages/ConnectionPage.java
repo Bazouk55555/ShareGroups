@@ -49,7 +49,7 @@ public class ConnectionPage extends AppCompatActivity {
                 if(connectionBaseDAO.canConnect(username,password))
                 {
                     String [] firstAndLastName = connectionBaseDAO.getFirstAndLastName(username);
-                    sendFirstAndLastName(firstAndLastName);
+                    sendFirstAndLastName(firstAndLastName,username);
                 }
                 else
                 {
@@ -75,7 +75,7 @@ public class ConnectionPage extends AppCompatActivity {
                                     public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
                                         try {
                                             String [] firstAndLastName = {jsonObject.getString("first_name"),jsonObject.getString("last_name")};
-                                            sendFirstAndLastName(firstAndLastName);
+                                            sendFirstAndLastName(firstAndLastName,"FFF");
                                         }
                                         catch (JSONException e) {
                                             e.printStackTrace();
@@ -113,10 +113,11 @@ public class ConnectionPage extends AppCompatActivity {
         });
     }
 
-    private void sendFirstAndLastName(String [] firstAndLastName)
+    private void sendFirstAndLastName(String [] firstAndLastName, String username)
     {
         Intent intentToMainPage = new Intent(this,MainPage.class);
         intentToMainPage.putExtra("LastNameAndFirstName",firstAndLastName);
+        intentToMainPage.putExtra("username",username);
         startActivity(intentToMainPage);
     }
 

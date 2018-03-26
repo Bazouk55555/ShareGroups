@@ -12,19 +12,19 @@ import java.util.Map;
 public class PGroup {
 
     private int id;
-    String name;
-    Map<String,Boolean> mapOfUsernames;
+    private String nameOfTheGroup;
+    private Map<String,Boolean> mapOfUsernames;
 
-    PGroup(int id, String name)
+    public PGroup(int id, String nameOfTheGroup)
     {
-        mapOfUsernames = new HashMap<>();
         this.id = id;
-        this.name = name;
+        mapOfUsernames = new HashMap<>();
+        this.nameOfTheGroup = nameOfTheGroup;
     }
 
     public void addMember(String username)
     {
-        //presenceGroupList.add(username);
+        mapOfUsernames.put(username,false);
     }
 
     public int getId()
@@ -32,8 +32,13 @@ public class PGroup {
         return id;
     }
 
-    /*public List<String> getPresenceGroupList()
+    public String getNameOfTheGroup()
     {
-        return presenceGroupList;
-    }*/
+        return nameOfTheGroup;
+    }
+
+    public Map<String,Boolean> getMapOfUsernames()
+    {
+        return mapOfUsernames;
+    }
 }

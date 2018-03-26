@@ -17,14 +17,13 @@ import java.util.List;
 
 public class AllTheGroupsPage extends AppCompatActivity {
 
-    List<PGroup> listOfGroups;
+    private List<PGroup> listOfGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results_page);
 
-        
         setToolbar();
     }
 
