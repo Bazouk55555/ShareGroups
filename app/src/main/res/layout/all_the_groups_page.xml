@@ -3,16 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/green"
+    android:orientation="vertical"
     android:id="@+id/main_relative_layout">
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/list_groups"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:id="@+id/main_layout_of_results_page">
-
-    </LinearLayout>
+        android:choiceMode="singleChoice"
+        android:divider="#FF0000"
+        android:dividerHeight="2dp" />
 
     <include layout="@layout/toolbar"/>
 

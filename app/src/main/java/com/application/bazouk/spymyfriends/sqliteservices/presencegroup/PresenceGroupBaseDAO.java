@@ -67,4 +67,16 @@ public class PresenceGroupBaseDAO {
         c.close();
         return usernames;
     }
+
+    public List<String> getAllGroupsName(String username) {
+        List <String> group = new ArrayList<>();
+        String query = "select "+ DatabasePresenceGroupHandler.NAME_OF_THE_GROUP +" from " + DatabasePresenceGroupHandler.TABLE_GROUP+ " WHERE "
+                + DatabasePresenceGroupHandler.USERNAME + "=?";
+        Cursor c = mDb.rawQuery(query, new String[]{username});
+        while(c.moveToNext()) {
+            group.add(c.getString(0));
+        }
+        c.close();
+        return group;
+    }
 }

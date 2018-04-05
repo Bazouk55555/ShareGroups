@@ -38,14 +38,19 @@ public class PresenceGroup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.presence_group);
-        LAST_GROUP++;
+        if(newGroup) {
+            LAST_GROUP++;
+        }
         id = getIntent().getIntExtra("id",0);
         nameOfTheGroup = getIntent().getStringExtra("name_of_the_group");
         numberOfPeopleTextView = ((TextView) findViewById(R.id.number_of_people_present));
         ((CheckBox) findViewById(R.id.check_box)).setText(MainPage.preferences.getString(MainPage.GET_FIRST_NAME,"") + " " + MainPage.preferences.getString(MainPage.GET_LAST_NAME,""));
-        updateTitle();
         layoutCheckBoxes = ((LinearLayout)findViewById(R.id.layout_checkbox));
-        updateCheckBox((CheckBox)layoutCheckBoxes.getChildAt(0));
+        updateTitle();
+        for(int i =0;i<layoutCheckBoxes.getChildCount();i++)
+        {
+            updateCheckBox((CheckBox) layoutCheckBoxes.getChildAt(i));
+        }
 
         usernamesList = new ArrayList<>();
         PresenceGroupBaseDAO presenceGroupBaseDAO = new PresenceGroupBaseDAO(this);
@@ -148,6 +153,13 @@ public class PresenceGroup extends AppCompatActivity {
 
     private void setToolbar()
     {
+        findViewById(R.id.home).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PresenceGroup.this,MainPage.class));
+            }
+        });
+
         findViewById(R.id.results).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
