@@ -17,7 +17,7 @@ public class DatabaseConnectionHandler extends SQLiteOpenHelper {
     public static final String TABLE_CONNECTION_DROP = "DROP TABLE IF EXISTS " + TABLE_CONNECTION + ";";
 
     private final static String DATABASE = "database_connection";
-    private final static int VERSION = 2;
+    private final static int VERSION = 1;
 
     public DatabaseConnectionHandler(Context context) {
         super(context, DATABASE, null, VERSION);

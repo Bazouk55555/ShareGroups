@@ -12,7 +12,8 @@ import com.application.bazouk.spymyfriends.R;
 import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
 import com.application.bazouk.spymyfriends.groupes.PresenceGroup;
 import com.application.bazouk.spymyfriends.groupes.ShareGroup;
-import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PGroup;
+import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.PGroup;
+import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.GroupsOfUsernamesBaseDAO;
 import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PresenceGroupBaseDAO;
 
 /**
@@ -59,14 +60,18 @@ public class MainPage extends AppCompatActivity {
         findViewById(R.id.presence_group_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int id = PresenceGroup.LAST_GROUP;
                 String nameOfTheGroup = "Random name";
-                PGroup pGroup = new PGroup(id,nameOfTheGroup);
-                pGroup.addMember(username);
                 PresenceGroupBaseDAO presenceGroupBaseDAO = new PresenceGroupBaseDAO(MainPage.this);
                 presenceGroupBaseDAO.open();
-                presenceGroupBaseDAO.addGroup(pGroup);
+                presenceGroupBaseDAO.addGroup(nameOfTheGroup);
+                int id = presenceGroupBaseDAO.getTotalOfGroups();
                 presenceGroupBaseDAO.close();
+                PGroup pGroup = new PGroup(id,nameOfTheGroup);
+                pGroup.addMember(username);
+                GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(MainPage.this);
+                groupsOfUsernamesBaseDAO.open();
+                groupsOfUsernamesBaseDAO.addGroup(pGroup);
+                groupsOfUsernamesBaseDAO.close();
                 Intent presenceGroupIntent = new Intent(MainPage.this,PresenceGroup.class);
                 presenceGroupIntent.putExtra("id",id);
                 presenceGroupIntent.putExtra("name_of_the_group",nameOfTheGroup);

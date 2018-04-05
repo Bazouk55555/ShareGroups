@@ -10,7 +10,8 @@ import android.widget.SimpleAdapter;
 
 import com.application.bazouk.spymyfriends.R;
 import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
-import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PresenceGroupBaseDAO;
+import com.application.bazouk.spymyfriends.groupes.PresenceGroup;
+import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.GroupsOfUsernamesBaseDAO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,17 +32,17 @@ public class AllTheGroupsPage extends AppCompatActivity {
         setContentView(R.layout.all_the_groups_page);
 
         String username = preferences.getString(USERNAME,"");
-        PresenceGroupBaseDAO presenceGroupBaseDAO = new PresenceGroupBaseDAO(this);
-        presenceGroupBaseDAO.open();
-        List<String> listOfGroups = presenceGroupBaseDAO.getAllGroupsName(username);
-        presenceGroupBaseDAO.close();
+        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
+        groupsOfUsernamesBaseDAO.open();
+        final List<String[]> listOfGroups = groupsOfUsernamesBaseDAO.getAllGroupsName(username);
+        groupsOfUsernamesBaseDAO.close();
         List<HashMap<String, String>> listMapOfEachGroup;
         SimpleAdapter adapterAlarms;
         listMapOfEachGroup = new ArrayList<>();
 
-        for (String group : listOfGroups) {
+        for (int i =0;i<listOfGroups.size();i++) {
             HashMap<String, String> mapOfTheNewGroup= new HashMap<>();
-            mapOfTheNewGroup.put("group", group);
+            mapOfTheNewGroup.put("group", listOfGroups.get(i)[0]);
             listMapOfEachGroup.add(mapOfTheNewGroup);
         }
 
@@ -56,7 +57,11 @@ public class AllTheGroupsPage extends AppCompatActivity {
                 convertViewToReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(AllTheGroupsPage.this,MainPage.class));
+                        Intent presenceGroupIntent = new Intent(AllTheGroupsPage.this,PresenceGroup.class);
+                        presenceGroupIntent.putExtra("id",Integer.parseInt(listOfGroups.get(position)[1]));
+                        presenceGroupIntent.putExtra("name_of_the_group",listOfGroups.get(position)[0]);
+                        presenceGroupIntent.putExtra("existing_group",true);
+                        startActivity(presenceGroupIntent);
                     }
                 });
                 return convertViewToReturn;

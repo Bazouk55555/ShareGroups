@@ -1,8 +1,6 @@
-package com.application.bazouk.spymyfriends.sqliteservices.presencegroup;
+package com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
