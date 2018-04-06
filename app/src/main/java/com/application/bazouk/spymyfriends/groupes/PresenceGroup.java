@@ -52,14 +52,18 @@ public class PresenceGroup extends AppCompatActivity {
             {
                 if(!username.equals(MainPage.preferences.getString(MainPage.USERNAME,"")))
                 {
-                    addAMember(username);
+                    String [] firstAndLastName = findNameFromDatabase(username);
+                    if(firstAndLastName.length!=0)
+                    {
+                        CheckBox checkBox = addCheckBox(username, firstAndLastName);
+                        setCheckBox(checkBox);
+                        updateCheckBox(checkBox,id,username);
+                    }
                 }
             }
+            updateCheckBox((CheckBox)layoutCheckBoxes.getChildAt(0),id,MainPage.preferences.getString(MainPage.USERNAME,""));
         }
-        for(int i =0;i<layoutCheckBoxes.getChildCount();i++)
-        {
-            updateCheckBox((CheckBox) layoutCheckBoxes.getChildAt(i));
-        }
+        setCheckBox((CheckBox) layoutCheckBoxes.getChildAt(0));
         updateTitle();
         findViewById(R.id.add_a_member).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,10 +76,28 @@ public class PresenceGroup extends AppCompatActivity {
         setToolbar();
     }
 
+    private void updateCheckBox(CheckBox checkBox, int id_group,String username)
+    {
+        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
+        groupsOfUsernamesBaseDAO.open();
+        checkBox.setChecked(groupsOfUsernamesBaseDAO.getPresence(id_group,username));
+        groupsOfUsernamesBaseDAO.close();
+    }
+
     public void addAMember(String username)
     {
         String [] firstAndLastName = findNameFromDatabase(username);
-        addCheckBox(username, firstAndLastName);
+        if(firstAndLastName.length!=0)
+        {
+            usernamesList.add(username);
+            CheckBox checkBox = addCheckBox(username, firstAndLastName);
+            addMemberToDatabase(username);
+            setCheckBox(checkBox);
+        }
+        else
+        {
+            //Send a message to tell something bad happen
+        }
     }
 
     private String [] findNameFromDatabase(String username)
@@ -87,38 +109,34 @@ public class PresenceGroup extends AppCompatActivity {
         return firstAndLastName;
     }
 
-    private void addCheckBox(String username, String [] firstAndLastName)
+    private CheckBox addCheckBox(String username, String [] firstAndLastName)
     {
-        if(firstAndLastName.length!=0)
-        {
-            CheckBox checkBox = new CheckBox(this);
-            float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels = (int) (5*scale + 0.5f);
-            checkBox.setPadding(dpAsPixels,0,0,0);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, 0, 0, dpAsPixels);
-            checkBox.setLayoutParams(params);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                checkBox.setButtonDrawable(getResources().getDrawable(R.drawable.custom_checkbox,null));
-            }
-            else
-            {
-                checkBox.setButtonDrawable(getResources().getDrawable(R.drawable.custom_checkbox));
-            }
-            checkBox.setText(firstAndLastName[0]+" "+firstAndLastName[1]);
-            layoutCheckBoxes.addView(checkBox,layoutCheckBoxes.getChildCount());
-            GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
-            groupsOfUsernamesBaseDAO.open();
-            groupsOfUsernamesBaseDAO.addMember(id,nameOfTheGroup,username,false);
-            updateCheckBox(checkBox);
-            usernamesList.add(username);
-            groupsOfUsernamesBaseDAO.close();
+        CheckBox checkBox = new CheckBox(this);
+        float scale = getResources().getDisplayMetrics().density;
+        int dpAsPixels = (int) (5*scale + 0.5f);
+        checkBox.setPadding(dpAsPixels,0,0,0);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 0, 0, dpAsPixels);
+        checkBox.setLayoutParams(params);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            checkBox.setButtonDrawable(getResources().getDrawable(R.drawable.custom_checkbox,null));
         }
         else
         {
-            //Send a message to tell something bad happen
+            checkBox.setButtonDrawable(getResources().getDrawable(R.drawable.custom_checkbox));
         }
+        checkBox.setText(firstAndLastName[0]+" "+firstAndLastName[1]);
+        layoutCheckBoxes.addView(checkBox,layoutCheckBoxes.getChildCount());
+        return checkBox;
+    }
+
+    private void addMemberToDatabase(String username)
+    {
+        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
+        groupsOfUsernamesBaseDAO.open();
+        groupsOfUsernamesBaseDAO.addMember(id,nameOfTheGroup,username,false);
+        groupsOfUsernamesBaseDAO.close();
     }
 
 
@@ -137,7 +155,7 @@ public class PresenceGroup extends AppCompatActivity {
         }
     }
 
-    private void updateCheckBox(final CheckBox checkBox)
+    private void setCheckBox(final CheckBox checkBox)
     {
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,7 +180,7 @@ public class PresenceGroup extends AppCompatActivity {
     {
         GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
         groupsOfUsernamesBaseDAO.open();
-        groupsOfUsernamesBaseDAO.changePresence(id,usernamesList.get(layoutCheckBoxes.getChildCount()),isPresent);
+        groupsOfUsernamesBaseDAO.changePresence(id,usernamesList.get(layoutCheckBoxes.getChildCount()-1),isPresent);
         groupsOfUsernamesBaseDAO.close();
     }
 

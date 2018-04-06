@@ -20,9 +20,9 @@ public class PGroup {
         this.nameOfTheGroup = nameOfTheGroup;
     }
 
-    public void addMember(String username)
+    public void addMember(String username, boolean isPresent)
     {
-        mapOfUsernames.put(username,false);
+        mapOfUsernames.put(username,isPresent);
     }
 
     public int getId()

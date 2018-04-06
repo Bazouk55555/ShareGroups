@@ -67,7 +67,7 @@ public class MainPage extends AppCompatActivity {
                 int id = presenceGroupBaseDAO.getTotalOfGroups();
                 presenceGroupBaseDAO.close();
                 PGroup pGroup = new PGroup(id,nameOfTheGroup);
-                pGroup.addMember(username);
+                pGroup.addMember(username,true);
                 GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(MainPage.this);
                 groupsOfUsernamesBaseDAO.open();
                 groupsOfUsernamesBaseDAO.addGroup(pGroup);

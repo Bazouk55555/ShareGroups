@@ -81,4 +81,15 @@ public class GroupsOfUsernamesBaseDAO {
         c.close();
         return group;
     }
+
+    public boolean getPresence(int id_group, String username) {
+        boolean isPresent;
+        String query = "select "+ DatabaseGroupsOfUsernamesHandler.IS_PRESENT +" from " + DatabaseGroupsOfUsernamesHandler.TABLE_GROUP+ " WHERE "
+                + DatabaseGroupsOfUsernamesHandler.ID_GROUP + "=? and "+ DatabaseGroupsOfUsernamesHandler.USERNAME +"=?";
+        Cursor c = mDb.rawQuery(query, new String[]{Integer.toString(id_group),username});
+        c.moveToFirst();
+        isPresent = c.getInt(0)==1?true:false;
+        c.close();
+        return isPresent;
+    }
 }
