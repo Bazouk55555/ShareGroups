@@ -20,6 +20,8 @@ import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.Grou
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
+
 /**
  * Created by Adrien on 21/03/2018.
  */
@@ -207,8 +209,8 @@ public class PresenceGroup extends AppCompatActivity {
         findViewById(R.id.disconnection).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainPage.editor.clear();
-                MainPage.editor.apply();
+                editor.clear();
+                editor.apply();
                 startActivity(new Intent(PresenceGroup.this,ConnectionPage.class));
             }
         });

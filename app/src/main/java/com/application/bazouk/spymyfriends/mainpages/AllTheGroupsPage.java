@@ -17,8 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.application.bazouk.spymyfriends.mainpages.MainPage.USERNAME;
-import static com.application.bazouk.spymyfriends.mainpages.MainPage.preferences;
+import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.USERNAME;
+import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
+import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.preferences;
 
 /**
  * Created by Adrien on 10/01/2018.
@@ -90,8 +91,8 @@ public class AllTheGroupsPage extends AppCompatActivity {
         findViewById(R.id.disconnection).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainPage.editor.clear();
-                MainPage.editor.apply();
+                editor.clear();
+                editor.apply();
                 startActivity(new Intent(AllTheGroupsPage.this,ConnectionPage.class));
             }
         });

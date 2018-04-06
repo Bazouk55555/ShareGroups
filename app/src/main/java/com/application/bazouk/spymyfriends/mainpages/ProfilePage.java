@@ -8,6 +8,8 @@ import android.view.View;
 import com.application.bazouk.spymyfriends.R;
 import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
 
+import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
+
 /**
  * Created by Adrien on 10/01/2018.
  */
@@ -41,8 +43,8 @@ public class ProfilePage extends AppCompatActivity {
         findViewById(R.id.disconnection).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainPage.editor.clear();
-                MainPage.editor.apply();
+                editor.clear();
+                editor.apply();
                 startActivity(new Intent(ProfilePage.this,ConnectionPage.class));
             }
         });

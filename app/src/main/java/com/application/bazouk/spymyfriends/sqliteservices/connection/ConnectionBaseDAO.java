@@ -70,4 +70,18 @@ public class ConnectionBaseDAO {
         return firstAndLastName;
     }
 
+    public boolean isUsernameReal(String username)
+    {
+        String query = "select * from " + DatabaseConnectionHandler.TABLE_CONNECTION+ " WHERE "
+                + DatabaseConnectionHandler.USERNAME + "=?";
+        Cursor c = mDb.rawQuery(query, new String[]{username});
+        if(c.getCount()==0)
+        {
+            c.close();
+            return false;
+        }
+        c.close();
+        return true;
+    }
+
 }

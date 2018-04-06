@@ -12,9 +12,14 @@ import com.application.bazouk.spymyfriends.R;
 import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
 import com.application.bazouk.spymyfriends.groupes.PresenceGroup;
 import com.application.bazouk.spymyfriends.groupes.ShareGroup;
+import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
 import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.PGroup;
 import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.GroupsOfUsernamesBaseDAO;
 import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PresenceGroupBaseDAO;
+
+import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.USERNAME;
+import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
+import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.preferences;
 
 /**
  * Created by Adrien on 10/01/2018.
@@ -22,40 +27,17 @@ import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.Presence
 
 public class MainPage extends AppCompatActivity {
 
-    public static final String GET_FIRST_NAME = "first_name";
-    public static final String GET_LAST_NAME = "last name";
-    public static final String USERNAME = "username";
-    public static SharedPreferences preferences;
-    public static SharedPreferences.Editor editor;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
         setToolbar();
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = preferences.edit();
-        final String firstName;
-        final String lastName;
-        final String username;
-        if(preferences.getString(USERNAME,"").isEmpty() && preferences.getString(GET_LAST_NAME,"").isEmpty() && preferences.getString(GET_FIRST_NAME,"").isEmpty())
-        {
-            firstName = getIntent().getStringArrayExtra("LastNameAndFirstName")[0];
-            lastName = getIntent().getStringArrayExtra("LastNameAndFirstName")[1];
-            username = getIntent().getStringExtra("username");
-            editor.putString(GET_FIRST_NAME, firstName);
-            editor.putString(GET_LAST_NAME, lastName);
-            editor.putString(USERNAME, username);
-            editor.apply();
-        }
-        else
-        {
-            lastName = preferences.getString(GET_LAST_NAME,"");
-            firstName = preferences.getString(GET_FIRST_NAME,"");
-            username = preferences.getString(USERNAME,"");
-        }
-        TextView welcomeTextView = (TextView) findViewById(R.id.welcome);
-        welcomeTextView.setText("Welcome "+firstName+" "+lastName);
+        final String username = preferences.getString(USERNAME,"");;
+        ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(MainPage.this);
+        connectionBaseDAO.open();
+        String [] firstAndLastName = connectionBaseDAO.getFirstAndLastName(username);
+        connectionBaseDAO.close();
+        ((TextView) findViewById(R.id.welcome)).setText("Welcome "+firstAndLastName[0]+" "+firstAndLastName[1]);
 
         findViewById(R.id.presence_group_button).setOnClickListener(new View.OnClickListener() {
             @Override

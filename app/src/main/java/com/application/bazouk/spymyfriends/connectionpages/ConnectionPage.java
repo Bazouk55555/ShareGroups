@@ -1,6 +1,9 @@
 package com.application.bazouk.spymyfriends.connectionpages;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,12 +30,18 @@ import java.util.Arrays;
 public class ConnectionPage extends AppCompatActivity {
 
     private CallbackManager callbackManager;
+    public static SharedPreferences preferences;
+    public static SharedPreferences.Editor editor;
+    public static final String USERNAME = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.connection_page);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preferences.edit();
 
         findViewById(R.id.connect).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -48,8 +57,9 @@ public class ConnectionPage extends AppCompatActivity {
                 connectionBaseDAO.open();
                 if(connectionBaseDAO.canConnect(username,password))
                 {
-                    String [] firstAndLastName = connectionBaseDAO.getFirstAndLastName(username);
-                    sendFirstAndLastName(firstAndLastName,username);
+                    editor.putString(USERNAME, username);
+                    editor.apply();
+                    startActivity(new Intent(ConnectionPage.this,MainPage.class));
                 }
                 else
                 {
@@ -75,7 +85,7 @@ public class ConnectionPage extends AppCompatActivity {
                                     public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
                                         try {
                                             String [] firstAndLastName = {jsonObject.getString("first_name"),jsonObject.getString("last_name")};
-                                            sendFirstAndLastName(firstAndLastName,"FFF");
+                                            //sendFirstAndLastName(firstAndLastName,"FFF");
                                         }
                                         catch (JSONException e) {
                                             e.printStackTrace();
@@ -111,14 +121,6 @@ public class ConnectionPage extends AppCompatActivity {
                 new SignInDialog(ConnectionPage.this).show();
             }
         });
-    }
-
-    private void sendFirstAndLastName(String [] firstAndLastName, String username)
-    {
-        Intent intentToMainPage = new Intent(this,MainPage.class);
-        intentToMainPage.putExtra("LastNameAndFirstName",firstAndLastName);
-        intentToMainPage.putExtra("username",username);
-        startActivity(intentToMainPage);
     }
 
     @Override
