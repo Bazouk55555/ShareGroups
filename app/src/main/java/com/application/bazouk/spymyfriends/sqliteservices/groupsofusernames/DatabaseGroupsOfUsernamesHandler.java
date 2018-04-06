@@ -17,7 +17,7 @@ public class DatabaseGroupsOfUsernamesHandler extends SQLiteOpenHelper {
     public static final String TABLE_GROUP_DROP = "DROP TABLE IF EXISTS " + TABLE_GROUP + ";";
 
     private final static String DATABASE = "database_groups_by_usernames";
-    private final static int VERSION = 1;
+    private final static int VERSION = 2;
 
     public DatabaseGroupsOfUsernamesHandler(Context context) {
         super(context, DATABASE, null, VERSION);

@@ -60,7 +60,6 @@ public class AllTheGroupsPage extends AppCompatActivity {
                         Intent presenceGroupIntent = new Intent(AllTheGroupsPage.this,PresenceGroup.class);
                         presenceGroupIntent.putExtra("id",Integer.parseInt(listOfGroups.get(position)[1]));
                         presenceGroupIntent.putExtra("name_of_the_group",listOfGroups.get(position)[0]);
-                        presenceGroupIntent.putExtra("existing_group",true);
                         startActivity(presenceGroupIntent);
                     }
                 });
