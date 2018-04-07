@@ -27,12 +27,14 @@ import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage
 
 public class MainPage extends AppCompatActivity {
 
+    String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
         setToolbar();
-        final String username = preferences.getString(USERNAME,"");;
+        username = preferences.getString(USERNAME,"");;
         ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(MainPage.this);
         connectionBaseDAO.open();
         String [] firstAndLastName = connectionBaseDAO.getFirstAndLastName(username);
@@ -42,22 +44,8 @@ public class MainPage extends AppCompatActivity {
         findViewById(R.id.presence_group_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nameOfTheGroup = "Random name";
-                PresenceGroupBaseDAO presenceGroupBaseDAO = new PresenceGroupBaseDAO(MainPage.this);
-                presenceGroupBaseDAO.open();
-                presenceGroupBaseDAO.addGroup(nameOfTheGroup);
-                int id = presenceGroupBaseDAO.getTotalOfGroups();
-                presenceGroupBaseDAO.close();
-                PGroup pGroup = new PGroup(id,nameOfTheGroup);
-                pGroup.addMember(username,true);
-                GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(MainPage.this);
-                groupsOfUsernamesBaseDAO.open();
-                groupsOfUsernamesBaseDAO.addGroup(pGroup);
-                groupsOfUsernamesBaseDAO.close();
-                Intent presenceGroupIntent = new Intent(MainPage.this,PresenceGroup.class);
-                presenceGroupIntent.putExtra("id",id);
-                presenceGroupIntent.putExtra("name_of_the_group",nameOfTheGroup);
-                startActivity(presenceGroupIntent);
+                AddAGroupDialog addAGroupDialog = new AddAGroupDialog(MainPage.this, MainPage.this);
+                addAGroupDialog.show();
             }
         });
 
@@ -67,6 +55,25 @@ public class MainPage extends AppCompatActivity {
                 startActivity(new Intent(MainPage.this,ShareGroup.class));
             }
         });
+    }
+
+    void createANewGroup(String nameOfTheGroup)
+    {
+        PresenceGroupBaseDAO presenceGroupBaseDAO = new PresenceGroupBaseDAO(MainPage.this);
+        presenceGroupBaseDAO.open();
+        presenceGroupBaseDAO.addGroup(nameOfTheGroup);
+        int id = presenceGroupBaseDAO.getTotalOfGroups();
+        presenceGroupBaseDAO.close();
+        PGroup pGroup = new PGroup(id,nameOfTheGroup);
+        pGroup.addMember(username,true);
+        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(MainPage.this);
+        groupsOfUsernamesBaseDAO.open();
+        groupsOfUsernamesBaseDAO.addGroup(pGroup);
+        groupsOfUsernamesBaseDAO.close();
+        Intent presenceGroupIntent = new Intent(MainPage.this,PresenceGroup.class);
+        presenceGroupIntent.putExtra("id",id);
+        presenceGroupIntent.putExtra("name_of_the_group",nameOfTheGroup);
+        startActivity(presenceGroupIntent);
     }
 
     private void setToolbar()

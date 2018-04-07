@@ -1,41 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@color/green"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/number_of_people_present"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/main_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:paddingBottom="20sp"
-            android:textSize="35sp"
-            android:textStyle="bold" />
+            android:background="@color/green"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/number_of_people_present"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/layout_checkbox"
-                android:orientation="vertical">
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="20sp"
+                android:textSize="35sp"
+                android:textStyle="bold" />
 
-            </LinearLayout>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-        <Button
-            android:id="@+id/add_a_member"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Add a member" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layout_checkbox"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <Button
+                android:id="@+id/add_a_member"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add a member"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <include layout="@layout/toolbar"/>
 
-</RelativeLayout>
+</LinearLayout>
