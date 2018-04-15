@@ -92,4 +92,15 @@ public class GroupsOfUsernamesBaseDAO {
         c.close();
         return isPresent;
     }
+
+    public String getNameOfTheGroupFromId(int id_group)
+    {
+        String query = "select "+ DatabaseGroupsOfUsernamesHandler.NAME_OF_THE_GROUP +" from " + DatabaseGroupsOfUsernamesHandler.TABLE_GROUP+ " WHERE "
+                + DatabaseGroupsOfUsernamesHandler.ID_GROUP + "=?";
+        Cursor c = mDb.rawQuery(query, new String[]{Integer.toString(id_group)});
+        c.moveToFirst();
+        String nameOfTheGroup  = c.getString(0);
+        c.close();
+        return nameOfTheGroup;
+    }
 }

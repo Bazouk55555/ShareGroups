@@ -84,4 +84,12 @@ public class ConnectionBaseDAO {
         return true;
     }
 
+    public void modifyFirstAndLastName(String username,final String firstName, final String lastName)
+    {
+        ContentValues value = new ContentValues();
+        value.put(DatabaseConnectionHandler.FIRST_NAME,firstName);
+        value.put(DatabaseConnectionHandler.LAST_NAME,lastName);
+        mDb.update(DatabaseConnectionHandler.TABLE_CONNECTION,value,DatabaseConnectionHandler.USERNAME +"= ?",new String[]{username});
+    }
+
 }

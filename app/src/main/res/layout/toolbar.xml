@@ -6,35 +6,47 @@
     android:layout_alignParentBottom="true"
     android:background="@color/colorPrimary">
 
-    <ImageView
-        android:id="@+id/home"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="35sp"
-        android:src="@drawable/home" />
+        android:orientation="horizontal"
+        android:weightSum="5">
 
-    <ImageView
-        android:id="@+id/results"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="35sp"
-        android:paddingLeft="35sp"
-        android:src="@drawable/results" />
+        <ImageView
+            android:id="@+id/home"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/home" />
 
-    <ImageView
-        android:id="@+id/profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="35sp"
-        android:paddingLeft="35sp"
-        android:src="@drawable/profile" />
+        <ImageView
+            android:id="@+id/results"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/results" />
 
-    <ImageView
-        android:id="@+id/disconnection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:paddingLeft="35sp"
-        android:src="@drawable/disconnect" />
+        <ImageView
+            android:id="@+id/notification"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/notification" />
+
+        <ImageView
+            android:id="@+id/profile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/profile" />
+
+        <ImageView
+            android:id="@+id/disconnection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/disconnect" />
+
+    </LinearLayout>
 
 </android.support.v7.widget.Toolbar>

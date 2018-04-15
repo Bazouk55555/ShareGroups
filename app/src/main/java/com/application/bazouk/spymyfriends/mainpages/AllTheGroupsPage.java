@@ -1,5 +1,6 @@
 package com.application.bazouk.spymyfriends.mainpages;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -78,6 +79,13 @@ public class AllTheGroupsPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AllTheGroupsPage.this,MainPage.class));
+            }
+        });
+
+        findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AllTheGroupsPage.this,NotificationPage.class));
             }
         });
 

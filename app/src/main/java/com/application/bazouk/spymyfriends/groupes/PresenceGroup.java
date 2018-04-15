@@ -1,5 +1,6 @@
 package com.application.bazouk.spymyfriends.groupes;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.application.bazouk.spymyfriends.R;
 import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
 import com.application.bazouk.spymyfriends.mainpages.MainPage;
+import com.application.bazouk.spymyfriends.mainpages.NotificationPage;
 import com.application.bazouk.spymyfriends.mainpages.ProfilePage;
 import com.application.bazouk.spymyfriends.mainpages.AllTheGroupsPage;
 import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
@@ -40,7 +42,6 @@ public class PresenceGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.presence_group);
         id = getIntent().getIntExtra("id",0);
-        usernamesList = new ArrayList<>();
         GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
         groupsOfUsernamesBaseDAO.open();
         usernamesList = groupsOfUsernamesBaseDAO.getUsernames(id);
@@ -53,7 +54,7 @@ public class PresenceGroup extends AppCompatActivity {
             String [] firstAndLastName = findNameFromDatabase(username);
             if(firstAndLastName[0]!=null && firstAndLastName[1]!=null)
             {
-                CheckBox checkBox = addCheckBox(username, firstAndLastName);
+                CheckBox checkBox = addCheckBox(firstAndLastName);
                 setCheckBox(checkBox, username);
                 updateCheckBox(checkBox,id,username);
             }
@@ -86,17 +87,15 @@ public class PresenceGroup extends AppCompatActivity {
     public void addAMember(String username)
     {
         String [] firstAndLastName = findNameFromDatabase(username);
-        if(firstAndLastName.length!=0)
-        {
-            usernamesList.add(username);
-            CheckBox checkBox = addCheckBox(username, firstAndLastName);
-            addMemberToDatabase(username);
-            setCheckBox(checkBox, username);
-        }
-        else
-        {
-            //Send a message to tell something bad happen
-        }
+        usernamesList.add(username);
+        CheckBox checkBox = addCheckBox(firstAndLastName);
+        addMemberToDatabase(username);
+        setCheckBox(checkBox, username);
+    }
+
+    public int getId()
+    {
+        return id;
     }
 
     private String [] findNameFromDatabase(String username)
@@ -108,7 +107,7 @@ public class PresenceGroup extends AppCompatActivity {
         return firstAndLastName;
     }
 
-    private CheckBox addCheckBox(String username, String [] firstAndLastName)
+    private CheckBox addCheckBox(String [] firstAndLastName)
     {
         CheckBox checkBox = new CheckBox(this);
         float scale = getResources().getDisplayMetrics().density;
@@ -196,6 +195,13 @@ public class PresenceGroup extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(PresenceGroup.this,AllTheGroupsPage.class));
+            }
+        });
+
+        findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PresenceGroup.this,NotificationPage.class));
             }
         });
 

@@ -9,7 +9,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
@@ -39,6 +38,7 @@
         <activity android:name=".mainpages.ProfilePage"/>
         <activity android:name=".mainpages.MainPage"/>
         <activity android:name=".mainpages.AllTheGroupsPage"/>
+        <activity android:name=".mainpages.NotificationPage"/>
         <activity android:name=".groupes.PresenceGroup"/>
         <activity android:name=".groupes.ShareGroup"/>
 

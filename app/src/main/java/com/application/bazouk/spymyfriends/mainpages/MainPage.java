@@ -1,9 +1,8 @@
 package com.application.bazouk.spymyfriends.mainpages;
 
+import android.app.Notification;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -34,7 +33,7 @@ public class MainPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
         setToolbar();
-        username = preferences.getString(USERNAME,"");;
+        username = preferences.getString(USERNAME,"");
         ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(MainPage.this);
         connectionBaseDAO.open();
         String [] firstAndLastName = connectionBaseDAO.getFirstAndLastName(username);
@@ -82,6 +81,13 @@ public class MainPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainPage.this,AllTheGroupsPage.class));
+            }
+        });
+
+        findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainPage.this,NotificationPage.class));
             }
         });
 
