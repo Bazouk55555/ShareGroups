@@ -4,19 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.application.bazouk.spymyfriends.R;
 import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
-import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.DatabaseGroupsOfUsernamesHandler;
-import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.GroupsOfUsernamesBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.notificationpresencegroup.presencegroup.NotificationPresenceGroupBaseDAO;
+import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.GroupsOfUsernamesBaseDAO;
+import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.NotificationPresenceGroupBaseDAO;
 import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PresenceGroupBaseDAO;
 
 import java.util.ArrayList;
@@ -33,38 +28,82 @@ import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage
 
 public class NotificationPage extends AppCompatActivity {
 
+    private List<HashMap<String, String>> listMapOfEachGroup;
+    private SimpleAdapter adapterGroups;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notification_page);
 
-        String username = preferences.getString(USERNAME,"");
+        final String username = preferences.getString(USERNAME,"");
         NotificationPresenceGroupBaseDAO notificationPresenceGroupBaseDAO = new NotificationPresenceGroupBaseDAO(this);
         notificationPresenceGroupBaseDAO.open();
-        final List<Integer> listOfGroups = notificationPresenceGroupBaseDAO.getAllGroupsNameForAUsername(username);
+        final List<Integer> listOfGroupsId = notificationPresenceGroupBaseDAO.getAllGroupsNameForAUsername(username);
         notificationPresenceGroupBaseDAO.close();
-        ListView listViewNotificationGroups = (ListView) findViewById(R.id.list_notification_groups);
-        List<HashMap<String, String>> listMapOfEachGroup;
-        SimpleAdapter adapterAlarms;
+        final ListView listViewNotificationGroups = (ListView) findViewById(R.id.list_notification_groups);
         listMapOfEachGroup = new ArrayList<>();
-        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
-        groupsOfUsernamesBaseDAO.open();
+        PresenceGroupBaseDAO presenceGroupBaseDAO = new PresenceGroupBaseDAO(this);
+        presenceGroupBaseDAO.open();
 
-        for(int id: listOfGroups)
+        for(int id: listOfGroupsId)
         {
             HashMap<String, String> mapOfTheNotificationGroups = new HashMap<>();
-            mapOfTheNotificationGroups.put("name of the group", groupsOfUsernamesBaseDAO.getNameOfTheGroupFromId(id));
+            mapOfTheNotificationGroups.put("name of the group", presenceGroupBaseDAO.getNameOfTheGroupFromId(id));
             mapOfTheNotificationGroups.put("yes", "Yes");
             mapOfTheNotificationGroups.put("no", "No");
             listMapOfEachGroup.add(mapOfTheNotificationGroups);
         }
-        groupsOfUsernamesBaseDAO.close();
+        presenceGroupBaseDAO.close();
 
-        adapterAlarms = new SimpleAdapter(this, listMapOfEachGroup, R.layout.list_view_notification_item,
-                new String[]{"name of the group", "yes", "no"}, new int[]{R.id.group, R.id.yes, R.id.no});
-        listViewNotificationGroups.setAdapter(adapterAlarms);
+        adapterGroups = new SimpleAdapter(this, listMapOfEachGroup, R.layout.list_view_notification_item,
+                new String[]{"name of the group", "yes", "no"}, new int[]{R.id.name_of_the_group, R.id.yes, R.id.no})
+        {
+            @Override
+            public View getView(final int position, final View convertView, ViewGroup parent)
+            {
+                final View convertViewToReturn = super.getView(position, convertView, parent);
+                convertViewToReturn.findViewById(R.id.yes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addMemberToDatabase(username,listOfGroupsId.get(position));
+                        removeMemberFromNotification(username,listOfGroupsId.get(position));
+                        listOfGroupsId.remove(position);
+                        listMapOfEachGroup.remove(position);
+                        adapterGroups.notifyDataSetChanged();
+                    }
+                });
+                convertViewToReturn.findViewById(R.id.no).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeMemberFromNotification(username,listOfGroupsId.get(position));
+                        listOfGroupsId.remove(position);
+                        listMapOfEachGroup.remove(position);
+                        adapterGroups.notifyDataSetChanged();
+                    }
+                });
+                return convertViewToReturn;
+            }
+        };
+        listViewNotificationGroups.setAdapter(adapterGroups);
 
         setToolbar();
+    }
+
+    private void addMemberToDatabase(String username, int id)
+    {
+        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
+        groupsOfUsernamesBaseDAO.open();
+        groupsOfUsernamesBaseDAO.addMember(id,username);
+        groupsOfUsernamesBaseDAO.close();
+    }
+
+    private void removeMemberFromNotification(String username, int id)
+    {
+        NotificationPresenceGroupBaseDAO notificationPresenceGroupBaseDAO= new NotificationPresenceGroupBaseDAO(this);
+        notificationPresenceGroupBaseDAO.open();
+        notificationPresenceGroupBaseDAO.removeMember(id,username);
+        notificationPresenceGroupBaseDAO.close();
     }
 
     private void setToolbar()

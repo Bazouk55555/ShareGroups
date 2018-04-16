@@ -12,7 +12,7 @@ import android.widget.SimpleAdapter;
 import com.application.bazouk.spymyfriends.R;
 import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
 import com.application.bazouk.spymyfriends.groupes.PresenceGroup;
-import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.GroupsOfUsernamesBaseDAO;
+import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.GroupsOfUsernamesBaseDAO;
 
 import java.util.ArrayList;
 import java.util.HashMap;

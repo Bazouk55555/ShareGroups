@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import com.application.bazouk.spymyfriends.R;
 import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.notificationpresencegroup.presencegroup.NotificationPresenceGroupBaseDAO;
+import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.NotificationPresenceGroupBaseDAO;
 
 /**
  * Created by Adrien on 24/03/2018.
@@ -32,10 +32,11 @@ public class AddAMemberDialog extends Dialog {
                 connectionBaseDAO.open();
                 if(connectionBaseDAO.isUsernameReal(username))
                 {
-                    /*NotificationPresenceGroupBaseDAO notificationPresenceGroupBaseDAO = new NotificationPresenceGroupBaseDAO(context);
+                    NotificationPresenceGroupBaseDAO notificationPresenceGroupBaseDAO = new NotificationPresenceGroupBaseDAO(context);
                     notificationPresenceGroupBaseDAO.open();
-                    notificationPresenceGroupBaseDAO.addNotificationGroup(presenceGroup.getId(),username);*/
-                    presenceGroup.addAMember(((EditText) findViewById(R.id.username)).getText().toString());
+                    notificationPresenceGroupBaseDAO.addNotificationGroup(presenceGroup.getId(),username);
+                    //presenceGroup.addAMember(((EditText) findViewById(R.id.username)).getText().toString());
+                    notificationPresenceGroupBaseDAO.close();
                 }
                 else
                 {

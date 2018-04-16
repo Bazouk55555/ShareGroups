@@ -1,6 +1,5 @@
 package com.application.bazouk.spymyfriends.mainpages;
 
-import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +11,8 @@ import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
 import com.application.bazouk.spymyfriends.groupes.PresenceGroup;
 import com.application.bazouk.spymyfriends.groupes.ShareGroup;
 import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.PGroup;
-import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.GroupsOfUsernamesBaseDAO;
+import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PGroup;
+import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.GroupsOfUsernamesBaseDAO;
 import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PresenceGroupBaseDAO;
 
 import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.USERNAME;
@@ -71,7 +70,6 @@ public class MainPage extends AppCompatActivity {
         groupsOfUsernamesBaseDAO.close();
         Intent presenceGroupIntent = new Intent(MainPage.this,PresenceGroup.class);
         presenceGroupIntent.putExtra("id",id);
-        presenceGroupIntent.putExtra("name_of_the_group",nameOfTheGroup);
         startActivity(presenceGroupIntent);
     }
 

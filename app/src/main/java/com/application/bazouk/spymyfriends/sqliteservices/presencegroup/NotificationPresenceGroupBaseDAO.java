@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends.sqliteservices.notificationpresencegroup.presencegroup;
+package com.application.bazouk.spymyfriends.sqliteservices.presencegroup;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,10 +11,10 @@ import java.util.List;
 public class NotificationPresenceGroupBaseDAO {
 
     private SQLiteDatabase mDb = null;
-    private DatabaseNotificationPresenceGroupHandler databaseHandler = null;
+    private DatabasePresenceGroupHandler databaseHandler = null;
 
     public NotificationPresenceGroupBaseDAO(Context pContext) {
-        this.databaseHandler = new DatabaseNotificationPresenceGroupHandler(pContext);
+        this.databaseHandler = new DatabasePresenceGroupHandler(pContext);
     }
 
     public SQLiteDatabase open() {
@@ -29,13 +29,13 @@ public class NotificationPresenceGroupBaseDAO {
     public void addNotificationGroup(int id, String username)
     {
         ContentValues value = new ContentValues();
-        value.put(DatabaseNotificationPresenceGroupHandler.ID_GROUP, id);
-        value.put(DatabaseNotificationPresenceGroupHandler.USERNAME, username);
-        mDb.insert(DatabaseNotificationPresenceGroupHandler.TABLE_NOTIFICATION_GROUP, null, value);
+        value.put(DatabasePresenceGroupHandler.ID_GROUP, id);
+        value.put(DatabasePresenceGroupHandler.USERNAME, username);
+        mDb.insert(DatabasePresenceGroupHandler.TABLE_NOTIFICATION_GROUP, null, value);
     }
 
     public int getTotalOfNotificationGroups() {
-        String query = "select count(*)"+" from " + DatabaseNotificationPresenceGroupHandler.TABLE_NOTIFICATION_GROUP;
+        String query = "select count(*)"+" from " + DatabasePresenceGroupHandler.TABLE_NOTIFICATION_GROUP;
         Cursor c = mDb.rawQuery(query, null);
         c.moveToFirst();
         int total;
@@ -53,13 +53,17 @@ public class NotificationPresenceGroupBaseDAO {
 
     public List<Integer> getAllGroupsNameForAUsername(String username) {
         List <Integer> group = new ArrayList<>();
-        String query = "select "+ DatabaseNotificationPresenceGroupHandler.ID_GROUP +" from " + DatabaseNotificationPresenceGroupHandler.TABLE_NOTIFICATION_GROUP+ " WHERE "
-                + DatabaseNotificationPresenceGroupHandler.USERNAME + "=?";
+        String query = "select "+ DatabasePresenceGroupHandler.ID_GROUP +" from " + DatabasePresenceGroupHandler.TABLE_NOTIFICATION_GROUP+ " WHERE "
+                + DatabasePresenceGroupHandler.USERNAME + "=?";
         Cursor c = mDb.rawQuery(query, new String[]{username});
         while(c.moveToNext()) {
             group.add(c.getInt(0));
         }
         c.close();
         return group;
+    }
+
+    public void removeMember(int id, String username) {
+        mDb.delete(DatabasePresenceGroupHandler.TABLE_NOTIFICATION_GROUP,  DatabasePresenceGroupHandler.ID_GROUP+ " = ?" +" and "+DatabasePresenceGroupHandler.USERNAME+ " = ?", new String[] {String.valueOf(id),username});
     }
 }

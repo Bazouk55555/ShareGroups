@@ -1,6 +1,5 @@
 package com.application.bazouk.spymyfriends.groupes;
 
-import android.app.Notification;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,9 +16,8 @@ import com.application.bazouk.spymyfriends.mainpages.NotificationPage;
 import com.application.bazouk.spymyfriends.mainpages.ProfilePage;
 import com.application.bazouk.spymyfriends.mainpages.AllTheGroupsPage;
 import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.groupsofusernames.GroupsOfUsernamesBaseDAO;
+import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.GroupsOfUsernamesBaseDAO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
@@ -34,7 +32,6 @@ public class PresenceGroup extends AppCompatActivity {
     private TextView numberOfPeopleTextView;
     private LinearLayout layoutCheckBoxes;
     private int id;
-    private String nameOfTheGroup;
     private List<String> usernamesList;
 
     @Override
@@ -46,7 +43,6 @@ public class PresenceGroup extends AppCompatActivity {
         groupsOfUsernamesBaseDAO.open();
         usernamesList = groupsOfUsernamesBaseDAO.getUsernames(id);
         groupsOfUsernamesBaseDAO.close();
-        nameOfTheGroup = getIntent().getStringExtra("name_of_the_group");
         numberOfPeopleTextView = ((TextView) findViewById(R.id.number_of_people_present));
         layoutCheckBoxes = ((LinearLayout)findViewById(R.id.layout_checkbox));
         for(String username: usernamesList)
@@ -133,7 +129,7 @@ public class PresenceGroup extends AppCompatActivity {
     {
         GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
         groupsOfUsernamesBaseDAO.open();
-        groupsOfUsernamesBaseDAO.addMember(id,nameOfTheGroup,username,false);
+        groupsOfUsernamesBaseDAO.addMember(id,username);
         groupsOfUsernamesBaseDAO.close();
     }
 

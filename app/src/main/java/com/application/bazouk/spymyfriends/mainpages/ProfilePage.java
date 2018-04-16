@@ -1,6 +1,5 @@
 package com.application.bazouk.spymyfriends.mainpages;
 
-import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,11 +11,9 @@ import android.widget.TextView;
 
 import com.application.bazouk.spymyfriends.R;
 import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
-import com.application.bazouk.spymyfriends.groupes.PresenceGroup;
 import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
+import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.GroupsOfUsernamesBaseDAO;
 import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PresenceGroupBaseDAO;
-
-import org.w3c.dom.Text;
 
 import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
 import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.preferences;
@@ -42,10 +39,10 @@ public class ProfilePage extends AppCompatActivity {
         firstNameEditText.setText(firstAndLastName[0]);
         lastNameEditText.setText(firstAndLastName[1]);
         ((TextView)findViewById(R.id.username)).setText(username);
-        PresenceGroupBaseDAO presenceGroupBaseDAO = new PresenceGroupBaseDAO(this);
-        presenceGroupBaseDAO.open();
-        ((TextView) findViewById(R.id.number_of_groups)).setText(Integer.toString(presenceGroupBaseDAO.getTotalOfGroups()));
-        presenceGroupBaseDAO.close();
+        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
+        groupsOfUsernamesBaseDAO.open();
+        ((TextView) findViewById(R.id.number_of_groups)).setText(Integer.toString(groupsOfUsernamesBaseDAO.getNumberOfGroupsForUsername(username)));
+        groupsOfUsernamesBaseDAO.close();
 
         final Button modifyButton = (Button)findViewById(R.id.modify);
 
