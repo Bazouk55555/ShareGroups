@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends.mainpages;
+package com.application.bazouk.whosin.mainpages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,14 +9,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.application.bazouk.spymyfriends.R;
-import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
-import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.GroupsOfUsernamesBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PresenceGroupBaseDAO;
+import com.application.bazouk.whosin.R;
+import com.application.bazouk.whosin.connectionpages.ConnectionPage;
+import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
+import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
 
-import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
-import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.preferences;
+import static com.application.bazouk.whosin.connectionpages.ConnectionPage.editor;
+import static com.application.bazouk.whosin.connectionpages.ConnectionPage.preferences;
 
 /**
  * Created by Adrien on 10/01/2018.

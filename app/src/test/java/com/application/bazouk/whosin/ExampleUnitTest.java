@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends;
+package com.application.bazouk.whosin;
 
 import org.junit.Test;
 

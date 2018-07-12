@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends.groupes;
+package com.application.bazouk.whosin.groupes;
 
 import android.content.Intent;
 import android.os.Build;
@@ -9,18 +9,16 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.application.bazouk.spymyfriends.R;
-import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
-import com.application.bazouk.spymyfriends.mainpages.MainPage;
-import com.application.bazouk.spymyfriends.mainpages.NotificationPage;
-import com.application.bazouk.spymyfriends.mainpages.ProfilePage;
-import com.application.bazouk.spymyfriends.mainpages.AllTheGroupsPage;
-import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.GroupsOfUsernamesBaseDAO;
+import com.application.bazouk.whosin.R;
+import com.application.bazouk.whosin.connectionpages.ConnectionPage;
+import com.application.bazouk.whosin.mainpages.MainPage;
+import com.application.bazouk.whosin.mainpages.NotificationPage;
+import com.application.bazouk.whosin.mainpages.ProfilePage;
+import com.application.bazouk.whosin.mainpages.AllTheGroupsPage;
+import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
+import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
 
 import java.util.List;
-
-import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
 
 /**
  * Created by Adrien on 21/03/2018.
@@ -59,7 +57,7 @@ public class PresenceGroup extends AppCompatActivity {
         findViewById(R.id.add_a_member).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddAMemberDialog addAMemberDialog = new AddAMemberDialog(PresenceGroup.this,PresenceGroup.this);
+                AddAMemberDialog addAMemberDialog = new AddAMemberDialog(PresenceGroup.this,PresenceGroup.this,usernamesList);
                 addAMemberDialog.show();
             }
         });
@@ -78,15 +76,6 @@ public class PresenceGroup extends AppCompatActivity {
             numberOfPresence++;
         }
         groupsOfUsernamesBaseDAO.close();
-    }
-
-    public void addAMember(String username)
-    {
-        String [] firstAndLastName = findNameFromDatabase(username);
-        usernamesList.add(username);
-        CheckBox checkBox = addCheckBox(firstAndLastName);
-        addMemberToDatabase(username);
-        setCheckBox(checkBox, username);
     }
 
     public int getId()
@@ -211,8 +200,8 @@ public class PresenceGroup extends AppCompatActivity {
         findViewById(R.id.disconnection).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.clear();
-                editor.apply();
+                ConnectionPage.editor.clear();
+                ConnectionPage.editor.apply();
                 startActivity(new Intent(PresenceGroup.this,ConnectionPage.class));
             }
         });

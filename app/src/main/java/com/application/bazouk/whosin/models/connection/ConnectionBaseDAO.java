@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends.sqliteservices.connection;
+package com.application.bazouk.whosin.models.connection;
 
 import android.content.ContentValues;
 import android.content.Context;

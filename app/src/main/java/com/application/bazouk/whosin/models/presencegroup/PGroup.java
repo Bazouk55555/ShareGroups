@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends.sqliteservices.presencegroup;
+package com.application.bazouk.whosin.models.presencegroup;
 
 import java.util.HashMap;
 import java.util.Map;

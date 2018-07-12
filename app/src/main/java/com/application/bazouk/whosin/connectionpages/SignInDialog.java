@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends.connectionpages;
+package com.application.bazouk.whosin.connectionpages;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 
-import com.application.bazouk.spymyfriends.R;
-import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
+import com.application.bazouk.whosin.R;
+import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
 
 public class SignInDialog extends Dialog {
 

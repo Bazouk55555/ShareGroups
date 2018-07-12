@@ -1,6 +1,5 @@
-package com.application.bazouk.spymyfriends.mainpages;
+package com.application.bazouk.whosin.mainpages;
 
-import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,18 +8,18 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.application.bazouk.spymyfriends.R;
-import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
-import com.application.bazouk.spymyfriends.groupes.PresenceGroup;
-import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.GroupsOfUsernamesBaseDAO;
+import com.application.bazouk.whosin.R;
+import com.application.bazouk.whosin.connectionpages.ConnectionPage;
+import com.application.bazouk.whosin.groupes.PresenceGroup;
+import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.USERNAME;
-import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
-import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.preferences;
+import static com.application.bazouk.whosin.connectionpages.ConnectionPage.USERNAME;
+import static com.application.bazouk.whosin.connectionpages.ConnectionPage.editor;
+import static com.application.bazouk.whosin.connectionpages.ConnectionPage.preferences;
 
 /**
  * Created by Adrien on 10/01/2018.
@@ -33,7 +32,7 @@ public class AllTheGroupsPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.all_the_groups_page);
 
-        String username = preferences.getString(USERNAME,"");
+        final String username = preferences.getString(USERNAME,"");
         GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
         groupsOfUsernamesBaseDAO.open();
         final List<String[]> listOfGroups = groupsOfUsernamesBaseDAO.getAllGroupsName(username);

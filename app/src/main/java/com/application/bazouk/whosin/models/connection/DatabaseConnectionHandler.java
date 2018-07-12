@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends.sqliteservices.connection;
+package com.application.bazouk.whosin.models.connection;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,7 +17,7 @@ public class DatabaseConnectionHandler extends SQLiteOpenHelper {
     public static final String TABLE_CONNECTION_DROP = "DROP TABLE IF EXISTS " + TABLE_CONNECTION + ";";
 
     private final static String DATABASE = "database_connection";
-    private final static int VERSION = 1;
+    private final static int VERSION = 5;
 
     public DatabaseConnectionHandler(Context context) {
         super(context, DATABASE, null, VERSION);

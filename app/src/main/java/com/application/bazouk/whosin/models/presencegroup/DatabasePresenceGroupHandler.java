@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends.sqliteservices.presencegroup;
+package com.application.bazouk.whosin.models.presencegroup;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,7 +28,7 @@ public class DatabasePresenceGroupHandler extends SQLiteOpenHelper {
 
 
     private final static String DATABASE = "database_group";
-    private final static int VERSION = 2;
+    private final static int VERSION = 1;
 
     public DatabasePresenceGroupHandler(Context context) {
         super(context, DATABASE, null, VERSION);

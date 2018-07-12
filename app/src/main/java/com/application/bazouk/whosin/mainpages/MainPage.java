@@ -1,4 +1,4 @@
-package com.application.bazouk.spymyfriends.mainpages;
+package com.application.bazouk.whosin.mainpages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,18 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.application.bazouk.spymyfriends.R;
-import com.application.bazouk.spymyfriends.connectionpages.ConnectionPage;
-import com.application.bazouk.spymyfriends.groupes.PresenceGroup;
-import com.application.bazouk.spymyfriends.groupes.ShareGroup;
-import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PGroup;
-import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.GroupsOfUsernamesBaseDAO;
-import com.application.bazouk.spymyfriends.sqliteservices.presencegroup.PresenceGroupBaseDAO;
-
-import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.USERNAME;
-import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.editor;
-import static com.application.bazouk.spymyfriends.connectionpages.ConnectionPage.preferences;
+import com.application.bazouk.whosin.R;
+import com.application.bazouk.whosin.connectionpages.ConnectionPage;
+import com.application.bazouk.whosin.groupes.PresenceGroup;
+import com.application.bazouk.whosin.groupes.ShareGroup;
+import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
+import com.application.bazouk.whosin.models.presencegroup.PGroup;
+import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
+import com.application.bazouk.whosin.models.presencegroup.PresenceGroupBaseDAO;
 
 /**
  * Created by Adrien on 10/01/2018.
@@ -32,7 +28,7 @@ public class MainPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
         setToolbar();
-        username = preferences.getString(USERNAME,"");
+        username = ConnectionPage.preferences.getString(ConnectionPage.USERNAME,"");
         ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(MainPage.this);
         connectionBaseDAO.open();
         String [] firstAndLastName = connectionBaseDAO.getFirstAndLastName(username);
@@ -99,8 +95,8 @@ public class MainPage extends AppCompatActivity {
         findViewById(R.id.disconnection).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.clear();
-                editor.apply();
+                ConnectionPage.editor.clear();
+                ConnectionPage.editor.apply();
                 startActivity(new Intent(MainPage.this,ConnectionPage.class));
             }
         });

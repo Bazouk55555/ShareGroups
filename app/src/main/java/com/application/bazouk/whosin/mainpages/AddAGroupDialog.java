@@ -1,18 +1,13 @@
-package com.application.bazouk.spymyfriends.mainpages;
+package com.application.bazouk.whosin.mainpages;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 
-import com.application.bazouk.spymyfriends.R;
-import com.application.bazouk.spymyfriends.groupes.PresenceGroup;
-import com.application.bazouk.spymyfriends.sqliteservices.connection.ConnectionBaseDAO;
+import com.application.bazouk.whosin.R;
 
 /**
  * Created by Adrien on 24/03/2018.
