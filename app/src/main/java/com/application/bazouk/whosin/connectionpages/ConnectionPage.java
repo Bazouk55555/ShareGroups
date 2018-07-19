@@ -1,21 +1,33 @@
 package com.application.bazouk.whosin.connectionpages;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.application.bazouk.whosin.api.UserHelper;
 import com.application.bazouk.whosin.mainpages.MainPage;
+import com.application.bazouk.whosin.models.User;
 import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
 import com.application.bazouk.whosin.R;
 import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Arrays;
 
@@ -40,26 +52,30 @@ public class ConnectionPage extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                String username = ((EditText) findViewById(R.id.username)).getText().toString();
-                String password= ((EditText) findViewById(R.id.password)).getText().toString();
+                final String username = ((EditText) findViewById(R.id.username)).getText().toString();
+                final String password= ((EditText) findViewById(R.id.password)).getText().toString();
                 if(username.isEmpty() || password.isEmpty())
                 {
                     ((TextView)findViewById(R.id.wrong_identification)).setText("Wrong username/password");
-                    return;
                 }
-                ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(ConnectionPage.this);
-                connectionBaseDAO.open();
-                if(connectionBaseDAO.canConnect(username,password))
-                {
-                    editor.putString(USERNAME, username);
-                    editor.apply();
-                    startActivity(new Intent(ConnectionPage.this,MainPage.class));
+                else {
+                    UserHelper.getUsersCollection().whereEqualTo("username", username).whereEqualTo("password", password).get().
+                            addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (!task.getResult().isEmpty()) {
+                                        editor.putString(USERNAME, username);
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            editor.putString(NAME, (String)document.getData().get("name"));
+                                        }
+                                        editor.apply();
+                                        startActivity(new Intent(ConnectionPage.this, MainPage.class));
+                                    } else {
+                                        ((TextView) findViewById(R.id.wrong_identification)).setText("Wrong username/password");
+                                    }
+                                }
+                            });
                 }
-                else
-                {
-                    ((TextView)findViewById(R.id.wrong_identification)).setText("Wrong username/password");
-                }
-                connectionBaseDAO.close();
             }
         });
 

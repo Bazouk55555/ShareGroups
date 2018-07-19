@@ -38,8 +38,8 @@ public class UserHelper {
 
     // --- UPDATE ---
 
-    public static Task<Void> updateUsername(String uid, String username, String name) {
-        return UserHelper.getUsersCollection().document(uid).update("username", username,"name", name);
+    public static void updateName(String uid, String name) {
+        UserHelper.getUsersCollection().document(uid).update("name", name);
     }
 
     // --- DELETE ---

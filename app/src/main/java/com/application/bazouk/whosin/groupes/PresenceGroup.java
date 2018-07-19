@@ -18,6 +18,7 @@ import com.application.bazouk.whosin.mainpages.MainPage;
 import com.application.bazouk.whosin.mainpages.NotificationPage;
 import com.application.bazouk.whosin.mainpages.ProfilePage;
 import com.application.bazouk.whosin.mainpages.AllTheGroupsPage;
+import com.application.bazouk.whosin.models.UserGroup;
 import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
 import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,12 +55,12 @@ public class PresenceGroup extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     final DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        numberOfPeopleTextView = ((TextView) findViewById(R.id.number_of_people_present));
-                        layoutCheckBoxes = ((LinearLayout)findViewById(R.id.layout_checkbox));
+                        numberOfPeopleTextView = findViewById(R.id.number_of_people_present);
+                        layoutCheckBoxes = findViewById(R.id.layout_checkbox);
                         for(int i =0; i<((List<String>)document.getData().get("names")).size();i++)
                         {
                             CheckBox checkBox = addCheckBox(((List<String>) document.getData().get("names")).get(i));
-                            setCheckBox(checkBox, i,document);
+                            setCheckBox(checkBox, id, i, document);
                             updateCheckBox(checkBox,i,document);
                         }
                         updateTitle();
@@ -83,15 +84,12 @@ public class PresenceGroup extends AppCompatActivity {
 
     private void updateCheckBox(CheckBox checkBox, int i, DocumentSnapshot document)
     {
-        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
-        groupsOfUsernamesBaseDAO.open();
-        boolean isPresent = ((List<Boolean>) document.getData().get("isPresent")).get(i);
+        boolean isPresent = ((List<Boolean>) document.getData().get("is_present")).get(i);
         checkBox.setChecked(isPresent);
         if(isPresent)
         {
             numberOfPresence++;
         }
-        groupsOfUsernamesBaseDAO.close();
     }
 
     public String getId()
@@ -136,7 +134,7 @@ public class PresenceGroup extends AppCompatActivity {
         }
     }
 
-    private void setCheckBox(final CheckBox checkBox, final int i, final DocumentSnapshot document)
+    private void setCheckBox(final CheckBox checkBox, final String id, final int i, final DocumentSnapshot document)
     {
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,13 +143,17 @@ public class PresenceGroup extends AppCompatActivity {
                 {
                     numberOfPresence++;
                     updateTitle();
-                    // updater ca:((List<Boolean>) document.getData().get("isPresent")).get(i);
+                    List<Boolean> isPresent = (List<Boolean>)document.getData().get("is_present");
+                    isPresent.set(i,true);
+                    UserGroupHelper.updateUserGroupPresence(id,isPresent);
                 }
                 else
                 {
                     numberOfPresence--;
                     updateTitle();
-                    //updater ca: ((List<Boolean>) document.getData().get("isPresent")).get(i);
+                    List<Boolean> isPresent = (List<Boolean>)document.getData().get("is_present");
+                    isPresent.set(i,false);
+                    UserGroupHelper.updateUserGroupPresence(id,isPresent);
                 }
             }
         });

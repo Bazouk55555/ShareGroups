@@ -36,7 +36,7 @@ public class UserGroupHelper {
         Map<String, Object> userGroupMap = new HashMap<>();
         userGroupMap.put("usernames", userGroupToCreate.getUsernames());
         userGroupMap.put("names", userGroupToCreate.getNames());
-        userGroupMap.put("isPresent", userGroupToCreate.getIsPresent());
+        userGroupMap.put("is_present", userGroupToCreate.getIsPresent());
         userGroupMap.put("name_of_the_group", userGroupToCreate.getNameOfTheGroup());
         return getUsersCollection().add(userGroupMap);
     }
@@ -49,8 +49,8 @@ public class UserGroupHelper {
 
     // --- UPDATE ---
 
-    public static Task<Void> updateUserGroup(String uid, List<String>usernames, Boolean isPresent, String nameOfTheGroup) {
-        return UserGroupHelper.getUsersCollection().document(uid).update("username_array", usernames, "is_present",isPresent,"name", nameOfTheGroup);
+    public static Task<Void> updateUserGroupPresence(String uid, List<Boolean> isPresent) {
+        return UserGroupHelper.getUsersCollection().document(uid).update("is_present",isPresent);
     }
 
     // --- DELETE ---

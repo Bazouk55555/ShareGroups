@@ -13,10 +13,15 @@ import android.widget.EditText;
 import com.application.bazouk.whosin.R;
 import com.application.bazouk.whosin.api.NotificationHelper;
 import com.application.bazouk.whosin.api.UserGroupHelper;
+import com.application.bazouk.whosin.api.UserHelper;
 import com.application.bazouk.whosin.models.Notification;
+import com.application.bazouk.whosin.models.User;
 import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
 import com.application.bazouk.whosin.models.presencegroup.NotificationPresenceGroupBaseDAO;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
@@ -33,7 +38,7 @@ public class AddAMemberDialog extends Dialog {
         findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = ((EditText) findViewById(R.id.username)).getText().toString();
+                final String username = ((EditText) findViewById(R.id.username)).getText().toString();
                 if(((List<String>)document.getData().get("usernames")).contains(username))
                 {
                     AlertDialog.Builder builder;
@@ -48,26 +53,30 @@ public class AddAMemberDialog extends Dialog {
                                 }
                             }).setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
-                else if(1==1/*UserGroupHelper.getUsersCollection().document()connectionBaseDAO.isUsernameReal(username)*/)
-                {
-                    Notification notification = new Notification(id, username);
-                    NotificationHelper.createNotification(notification);
-                }
-                /*}
-                else
-                {
-                    AlertDialog.Builder builder;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
-                    } else {
-                        builder = new AlertDialog.Builder(context);
-                    }
-                    builder.setTitle("Not existing username").setMessage("This username does not exist")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
+                else {
+                    UserHelper.getUsersCollection().whereEqualTo("username", username).get().
+                            addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.getResult().isEmpty()) {
+                                        AlertDialog.Builder builder;
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
+                                        } else {
+                                            builder = new AlertDialog.Builder(context);
+                                        }
+                                        builder.setTitle("username not existing").setMessage("This username does not exists")
+                                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                    }
+                                                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                                    } else {
+                                        Notification notification = new Notification(id, username);
+                                        NotificationHelper.createNotification(notification);
+                                    }
                                 }
-                            }).setIcon(android.R.drawable.ic_dialog_alert).show();
-                //}*/
+                            });
+                }
                 dismiss();
             }
         });

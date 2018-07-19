@@ -2,18 +2,34 @@ package com.application.bazouk.whosin.mainpages;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.application.bazouk.whosin.R;
+import com.application.bazouk.whosin.api.UserGroupHelper;
+import com.application.bazouk.whosin.api.UserHelper;
 import com.application.bazouk.whosin.connectionpages.ConnectionPage;
+import com.application.bazouk.whosin.groupes.PresenceGroup;
 import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
 import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static com.application.bazouk.whosin.connectionpages.ConnectionPage.NAME;
 import static com.application.bazouk.whosin.connectionpages.ConnectionPage.editor;
 import static com.application.bazouk.whosin.connectionpages.ConnectionPage.preferences;
 
@@ -29,48 +45,48 @@ public class ProfilePage extends AppCompatActivity {
         setContentView(R.layout.profile_page);
 
         final String username = preferences.getString(ConnectionPage.USERNAME,"");
-        final EditText firstNameEditText = (EditText)findViewById(R.id.first_name);
-        final EditText lastNameEditText = (EditText)findViewById(R.id.last_name);
-        ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(ProfilePage.this);
-        connectionBaseDAO.open();
-        String [] firstAndLastName = connectionBaseDAO.getFirstAndLastName(username);
-        connectionBaseDAO.close();
-        firstNameEditText.setText(firstAndLastName[0]);
-        lastNameEditText.setText(firstAndLastName[1]);
+        final String name = preferences.getString(NAME,"");
         ((TextView)findViewById(R.id.username)).setText(username);
-        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
-        groupsOfUsernamesBaseDAO.open();
-        ((TextView) findViewById(R.id.number_of_groups)).setText(Integer.toString(groupsOfUsernamesBaseDAO.getNumberOfGroupsForUsername(username)));
-        groupsOfUsernamesBaseDAO.close();
+        ((TextView)findViewById(R.id.name)).setText(name);
+        UserGroupHelper.getUsersCollection().get().
+                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        ((TextView) findViewById(R.id.number_of_groups)).setText(Integer.toString(task.getResult().size()));
+                    }
+                });
 
+        final EditText nameEditText = (EditText)findViewById(R.id.name);
         final Button modifyButton = (Button)findViewById(R.id.modify);
 
         findViewById(R.id.modify).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final LinearLayout linearLayoutButtons = ((LinearLayout)findViewById(R.id.layout_buttons));
-                firstNameEditText.setFocusable(true);
-                lastNameEditText.setFocusable(true);
-                firstNameEditText.setClickable(true);
-                lastNameEditText.setClickable(true);
-                firstNameEditText.setFocusableInTouchMode(true);
-                lastNameEditText.setFocusableInTouchMode(true);
+                nameEditText.setFocusable(true);
+                nameEditText.setClickable(true);
+                nameEditText.setFocusableInTouchMode(true);
                 modifyButton.setClickable(false);
                 final Button okButton = new Button(ProfilePage.this);
                 okButton.setText("OK");
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(ProfilePage.this);
-                        connectionBaseDAO.open();
-                        connectionBaseDAO.modifyFirstAndLastName(username,firstNameEditText.getText().toString(),lastNameEditText.getText().toString());
-                        connectionBaseDAO.close();
-                        firstNameEditText.setFocusable(false);
-                        lastNameEditText.setFocusable(false);
-                        firstNameEditText.setClickable(false);
-                        lastNameEditText.setClickable(false);
-                        firstNameEditText.setFocusableInTouchMode(false);
-                        lastNameEditText.setFocusableInTouchMode(false);
+                        final String newName = nameEditText.getText().toString();
+                        UserHelper.getUsersCollection().whereEqualTo("username", username).get().
+                                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            UserHelper.updateName(document.getId(),newName);
+                                        }
+                                    }
+                                });
+                        editor.putString(NAME, newName);
+                        editor.apply();
+                        nameEditText.setFocusable(false);
+                        nameEditText.setClickable(false);
+                        nameEditText.setFocusableInTouchMode(false);
                         modifyButton.setClickable(true);
                         linearLayoutButtons.removeView(okButton);
 

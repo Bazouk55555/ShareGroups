@@ -41,7 +41,6 @@ public class MainPage extends AppCompatActivity {
         setContentView(R.layout.main_page);
         setToolbar();
         username = ConnectionPage.preferences.getString(ConnectionPage.USERNAME,"");
-        System.out.println("LE TROU DU CUL EST: "+username);
         ((TextView) findViewById(R.id.welcome)).setText("Welcome "+ConnectionPage.preferences.getString(ConnectionPage.NAME,""));
 
         findViewById(R.id.presence_group_button).setOnClickListener(new View.OnClickListener() {
@@ -73,7 +72,6 @@ public class MainPage extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 presenceGroupIntent.putExtra("id",documentReference.getId());
-                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
                 startActivity(presenceGroupIntent);
             }
         }).addOnFailureListener(new OnFailureListener() {
