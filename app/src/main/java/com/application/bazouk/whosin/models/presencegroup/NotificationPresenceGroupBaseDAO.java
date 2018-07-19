@@ -26,7 +26,7 @@ public class NotificationPresenceGroupBaseDAO {
         mDb.close();
     }
 
-    public void addNotificationGroup(int id, String username)
+    public void addNotificationGroup(String id, String username)
     {
         ContentValues value = new ContentValues();
         value.put(DatabasePresenceGroupHandler.ID_GROUP, id);

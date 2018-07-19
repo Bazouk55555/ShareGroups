@@ -25,17 +25,19 @@ public class ConnectionPage extends AppCompatActivity {
     public static SharedPreferences preferences;
     public static SharedPreferences.Editor editor;
     public static final String USERNAME = "username";
+    public static final String EMAIL = "email";
+    public static final String NAME = "name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.connection_page);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
 
         findViewById(R.id.connect).setOnClickListener(new View.OnClickListener(){
+
             @Override
             public void onClick(View v) {
                 String username = ((EditText) findViewById(R.id.username)).getText().toString();
@@ -95,7 +97,9 @@ public class ConnectionPage extends AppCompatActivity {
         IdpResponse response = IdpResponse.fromResultIntent(data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
-                editor.putString(USERNAME, response.getEmail());
+                editor.putString(USERNAME, response.getUser().getProviderId());
+                editor.putString(EMAIL, response.getUser().getEmail());
+                editor.putString(NAME, response.getUser().getName());
                 editor.apply();
                 startActivity(new Intent(ConnectionPage.this,MainPage.class));
             } else { // ERRORS

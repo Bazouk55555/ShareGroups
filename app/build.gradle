@@ -10,6 +10,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        lintOptions {
+            disable 'RestrictedApi'
+        }
     }
     buildTypes {
         release {
@@ -38,6 +41,9 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:4.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.0.0'
     implementation 'com.firebaseui:firebase-ui-firestore:4.0.0'
+
+    //Firebase-Database
+    implementation 'com.google.firebase:firebase-database:16.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

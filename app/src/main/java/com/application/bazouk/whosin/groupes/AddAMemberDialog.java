@@ -11,8 +11,12 @@ import android.view.Window;
 import android.widget.EditText;
 
 import com.application.bazouk.whosin.R;
+import com.application.bazouk.whosin.api.NotificationHelper;
+import com.application.bazouk.whosin.api.UserGroupHelper;
+import com.application.bazouk.whosin.models.Notification;
 import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
 import com.application.bazouk.whosin.models.presencegroup.NotificationPresenceGroupBaseDAO;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
 
@@ -21,7 +25,7 @@ import java.util.List;
  */
 
 public class AddAMemberDialog extends Dialog {
-    public AddAMemberDialog(@NonNull final Context context, final PresenceGroup presenceGroup, final List<String> usernameList) {
+    public AddAMemberDialog(@NonNull final Context context, final PresenceGroup presenceGroup, final String id, final DocumentSnapshot document) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.add_a_member_dialog);
@@ -30,9 +34,7 @@ public class AddAMemberDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 String username = ((EditText) findViewById(R.id.username)).getText().toString();
-                ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(context);
-                connectionBaseDAO.open();
-                if(usernameList.contains(username))
+                if(((List<String>)document.getData().get("usernames")).contains(username))
                 {
                     AlertDialog.Builder builder;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -46,14 +48,12 @@ public class AddAMemberDialog extends Dialog {
                                 }
                             }).setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
-                else if(connectionBaseDAO.isUsernameReal(username))
+                else if(1==1/*UserGroupHelper.getUsersCollection().document()connectionBaseDAO.isUsernameReal(username)*/)
                 {
-                    NotificationPresenceGroupBaseDAO notificationPresenceGroupBaseDAO = new NotificationPresenceGroupBaseDAO(context);
-                    notificationPresenceGroupBaseDAO.open();
-                    notificationPresenceGroupBaseDAO.addNotificationGroup(presenceGroup.getId(),username);
-                    //presenceGroup.addAMember(((EditText) findViewById(R.id.username)).getText().toString());
-                    notificationPresenceGroupBaseDAO.close();
+                    Notification notification = new Notification(id, username);
+                    NotificationHelper.createNotification(notification);
                 }
+                /*}
                 else
                 {
                     AlertDialog.Builder builder;
@@ -67,7 +67,7 @@ public class AddAMemberDialog extends Dialog {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             }).setIcon(android.R.drawable.ic_dialog_alert).show();
-                }
+                //}*/
                 dismiss();
             }
         });

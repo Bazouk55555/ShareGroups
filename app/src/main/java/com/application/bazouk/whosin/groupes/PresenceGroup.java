@@ -3,13 +3,16 @@ package com.application.bazouk.whosin.groupes;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.application.bazouk.whosin.R;
+import com.application.bazouk.whosin.api.UserGroupHelper;
 import com.application.bazouk.whosin.connectionpages.ConnectionPage;
 import com.application.bazouk.whosin.mainpages.MainPage;
 import com.application.bazouk.whosin.mainpages.NotificationPage;
@@ -17,8 +20,17 @@ import com.application.bazouk.whosin.mainpages.ProfilePage;
 import com.application.bazouk.whosin.mainpages.AllTheGroupsPage;
 import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
 import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
+
+import static com.firebase.ui.auth.AuthUI.TAG;
 
 /**
  * Created by Adrien on 21/03/2018.
@@ -29,47 +41,51 @@ public class PresenceGroup extends AppCompatActivity {
     private int numberOfPresence;
     private TextView numberOfPeopleTextView;
     private LinearLayout layoutCheckBoxes;
-    private int id;
-    private List<String> usernamesList;
+    private String id ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.presence_group);
-        id = getIntent().getIntExtra("id",0);
-        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
-        groupsOfUsernamesBaseDAO.open();
-        usernamesList = groupsOfUsernamesBaseDAO.getUsernames(id);
-        groupsOfUsernamesBaseDAO.close();
-        numberOfPeopleTextView = ((TextView) findViewById(R.id.number_of_people_present));
-        layoutCheckBoxes = ((LinearLayout)findViewById(R.id.layout_checkbox));
-        for(String username: usernamesList)
-        {
-            String [] firstAndLastName = findNameFromDatabase(username);
-            if(firstAndLastName[0]!=null && firstAndLastName[1]!=null)
-            {
-                CheckBox checkBox = addCheckBox(firstAndLastName);
-                setCheckBox(checkBox, username);
-                updateCheckBox(checkBox,id,username);
-            }
-        }
-        updateTitle();
-        findViewById(R.id.add_a_member).setOnClickListener(new View.OnClickListener() {
+        id = getIntent().getStringExtra("id");
+        UserGroupHelper.getUserGroup(id).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View v) {
-                AddAMemberDialog addAMemberDialog = new AddAMemberDialog(PresenceGroup.this,PresenceGroup.this,usernamesList);
-                addAMemberDialog.show();
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    final DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        numberOfPeopleTextView = ((TextView) findViewById(R.id.number_of_people_present));
+                        layoutCheckBoxes = ((LinearLayout)findViewById(R.id.layout_checkbox));
+                        for(int i =0; i<((List<String>)document.getData().get("names")).size();i++)
+                        {
+                            CheckBox checkBox = addCheckBox(((List<String>) document.getData().get("names")).get(i));
+                            setCheckBox(checkBox, i,document);
+                            updateCheckBox(checkBox,i,document);
+                        }
+                        updateTitle();
+                        findViewById(R.id.add_a_member).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                AddAMemberDialog addAMemberDialog = new AddAMemberDialog(PresenceGroup.this,PresenceGroup.this,id,document);
+                                addAMemberDialog.show();
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
             }
         });
-
         setToolbar();
     }
 
-    private void updateCheckBox(CheckBox checkBox, int id_group,String username)
+    private void updateCheckBox(CheckBox checkBox, int i, DocumentSnapshot document)
     {
         GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
         groupsOfUsernamesBaseDAO.open();
-        boolean isPresent = groupsOfUsernamesBaseDAO.getPresence(id_group,username);
+        boolean isPresent = ((List<Boolean>) document.getData().get("isPresent")).get(i);
         checkBox.setChecked(isPresent);
         if(isPresent)
         {
@@ -78,21 +94,12 @@ public class PresenceGroup extends AppCompatActivity {
         groupsOfUsernamesBaseDAO.close();
     }
 
-    public int getId()
+    public String getId()
     {
         return id;
     }
 
-    private String [] findNameFromDatabase(String username)
-    {
-        ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(PresenceGroup.this);
-        connectionBaseDAO.open();
-        String [] firstAndLastName = connectionBaseDAO.getFirstAndLastName(username);
-        connectionBaseDAO.close();
-        return firstAndLastName;
-    }
-
-    private CheckBox addCheckBox(String [] firstAndLastName)
+    private CheckBox addCheckBox(String name)
     {
         CheckBox checkBox = new CheckBox(this);
         float scale = getResources().getDisplayMetrics().density;
@@ -109,19 +116,10 @@ public class PresenceGroup extends AppCompatActivity {
         {
             checkBox.setButtonDrawable(getResources().getDrawable(R.drawable.custom_checkbox));
         }
-        checkBox.setText(firstAndLastName[0]+" "+firstAndLastName[1]);
+        checkBox.setText(name);
         layoutCheckBoxes.addView(checkBox,layoutCheckBoxes.getChildCount());
         return checkBox;
     }
-
-    private void addMemberToDatabase(String username)
-    {
-        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
-        groupsOfUsernamesBaseDAO.open();
-        groupsOfUsernamesBaseDAO.addMember(id,username);
-        groupsOfUsernamesBaseDAO.close();
-    }
-
 
     private void updateTitle()
     {
@@ -138,7 +136,7 @@ public class PresenceGroup extends AppCompatActivity {
         }
     }
 
-    private void setCheckBox(final CheckBox checkBox, final String username)
+    private void setCheckBox(final CheckBox checkBox, final int i, final DocumentSnapshot document)
     {
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,24 +145,16 @@ public class PresenceGroup extends AppCompatActivity {
                 {
                     numberOfPresence++;
                     updateTitle();
-                    updateDatabaseWithPresence(true,username);
+                    // updater ca:((List<Boolean>) document.getData().get("isPresent")).get(i);
                 }
                 else
                 {
                     numberOfPresence--;
                     updateTitle();
-                    updateDatabaseWithPresence(false,username);
+                    //updater ca: ((List<Boolean>) document.getData().get("isPresent")).get(i);
                 }
             }
         });
-    }
-
-    private void updateDatabaseWithPresence(boolean isPresent, String username)
-    {
-        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(this);
-        groupsOfUsernamesBaseDAO.open();
-        groupsOfUsernamesBaseDAO.changePresence(id,username,isPresent);
-        groupsOfUsernamesBaseDAO.close();
     }
 
     private void setToolbar()

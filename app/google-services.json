@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "637918217195",
+    "firebase_url": "https://whosin-cf41f.firebaseio.com",
+    "project_id": "whosin-cf41f",
+    "storage_bucket": "whosin-cf41f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637918217195:android:03d35b4114e1a598",
+        "android_client_info": {
+          "package_name": "com.application.bazouk.whosin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "637918217195-hrrtbvbjkp9mfubsrto8dplev22itqn9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9p5mvIWUvEyuzrq-eF3_6lIDGSwnQx3A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

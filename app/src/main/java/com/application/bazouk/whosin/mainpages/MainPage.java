@@ -2,18 +2,30 @@ package com.application.bazouk.whosin.mainpages;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.application.bazouk.whosin.R;
+import com.application.bazouk.whosin.api.UserGroupHelper;
 import com.application.bazouk.whosin.connectionpages.ConnectionPage;
 import com.application.bazouk.whosin.groupes.PresenceGroup;
 import com.application.bazouk.whosin.groupes.ShareGroup;
+import com.application.bazouk.whosin.models.UserGroup;
 import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
 import com.application.bazouk.whosin.models.presencegroup.PGroup;
 import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
 import com.application.bazouk.whosin.models.presencegroup.PresenceGroupBaseDAO;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.firebase.ui.auth.AuthUI.TAG;
 
 /**
  * Created by Adrien on 10/01/2018.
@@ -29,11 +41,8 @@ public class MainPage extends AppCompatActivity {
         setContentView(R.layout.main_page);
         setToolbar();
         username = ConnectionPage.preferences.getString(ConnectionPage.USERNAME,"");
-        ConnectionBaseDAO connectionBaseDAO = new ConnectionBaseDAO(MainPage.this);
-        connectionBaseDAO.open();
-        String [] firstAndLastName = connectionBaseDAO.getFirstAndLastName(username);
-        connectionBaseDAO.close();
-        ((TextView) findViewById(R.id.welcome)).setText("Welcome "+firstAndLastName[0]+" "+firstAndLastName[1]);
+        System.out.println("LE TROU DU CUL EST: "+username);
+        ((TextView) findViewById(R.id.welcome)).setText("Welcome "+ConnectionPage.preferences.getString(ConnectionPage.NAME,""));
 
         findViewById(R.id.presence_group_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,20 +62,26 @@ public class MainPage extends AppCompatActivity {
 
     void createANewGroup(String nameOfTheGroup)
     {
-        PresenceGroupBaseDAO presenceGroupBaseDAO = new PresenceGroupBaseDAO(MainPage.this);
-        presenceGroupBaseDAO.open();
-        presenceGroupBaseDAO.addGroup(nameOfTheGroup);
-        int id = presenceGroupBaseDAO.getTotalOfGroups();
-        presenceGroupBaseDAO.close();
-        PGroup pGroup = new PGroup(id,nameOfTheGroup);
-        pGroup.addMember(username,true);
-        GroupsOfUsernamesBaseDAO groupsOfUsernamesBaseDAO = new GroupsOfUsernamesBaseDAO(MainPage.this);
-        groupsOfUsernamesBaseDAO.open();
-        groupsOfUsernamesBaseDAO.addGroup(pGroup);
-        groupsOfUsernamesBaseDAO.close();
-        Intent presenceGroupIntent = new Intent(MainPage.this,PresenceGroup.class);
-        presenceGroupIntent.putExtra("id",id);
-        startActivity(presenceGroupIntent);
+        final Intent presenceGroupIntent = new Intent(MainPage.this,PresenceGroup.class);
+        List<String> usernames = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        List<Boolean> arePresent = new ArrayList<>();
+        usernames.add(username);
+        names.add(ConnectionPage.preferences.getString(ConnectionPage.NAME,""));
+        arePresent.add(true);
+        UserGroupHelper.createUserGroup(new UserGroup(usernames,names,arePresent,nameOfTheGroup)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                presenceGroupIntent.putExtra("id",documentReference.getId());
+                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                startActivity(presenceGroupIntent);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Error adding document", e);
+                }
+            });
     }
 
     private void setToolbar()
