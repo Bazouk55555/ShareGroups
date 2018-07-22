@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class NotificationHelper {
 
-    private static final String COLLECTION_NAME = "notifiactions";
+    private static final String COLLECTION_NAME = "notifications";
 
     // --- COLLECTION REFERENCE ---
 
@@ -26,8 +26,9 @@ public class NotificationHelper {
 
     public static Task<DocumentReference> createNotification(Notification notification) {
         Map<String, Object> notificationMap = new HashMap<>();
+        notificationMap.put("id_group", notification.getIdGroup());
         notificationMap.put("username", notification.getUsername());
-        notificationMap.put("idGroup", notification.getIdGroup());
+        notificationMap.put("name_of_the_group", notification.getNameOfTheGroup());
         return getNotificationCollection().add(notificationMap);
     }
 

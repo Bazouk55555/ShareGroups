@@ -71,7 +71,7 @@ public class AddAMemberDialog extends Dialog {
                                                     }
                                                 }).setIcon(android.R.drawable.ic_dialog_alert).show();
                                     } else {
-                                        Notification notification = new Notification(id, username);
+                                        Notification notification = new Notification(id, username,(String) document.getData().get("name_of_the_group"));
                                         NotificationHelper.createNotification(notification);
                                     }
                                 }
