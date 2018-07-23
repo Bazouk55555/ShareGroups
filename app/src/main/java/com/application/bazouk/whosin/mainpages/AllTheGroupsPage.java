@@ -13,7 +13,6 @@ import com.application.bazouk.whosin.R;
 import com.application.bazouk.whosin.api.UserGroupHelper;
 import com.application.bazouk.whosin.connectionpages.ConnectionPage;
 import com.application.bazouk.whosin.groupes.PresenceGroup;
-import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -64,7 +63,7 @@ public class AllTheGroupsPage extends AppCompatActivity {
                             listMapOfEachGroup.add(mapOfTheNewGroup);
                         }
 
-                        final ListView listViewGroups = (ListView) findViewById(R.id.list_groups);
+                        final ListView listViewGroups = findViewById(R.id.list_groups);
                         adapterAlarms = new SimpleAdapter(AllTheGroupsPage.this, listMapOfEachGroup, R.layout.list_view_group_item,
                                 new String[]{"group"}, new int[]{R.id.group})
                         {

@@ -12,12 +12,8 @@ import android.widget.EditText;
 
 import com.application.bazouk.whosin.R;
 import com.application.bazouk.whosin.api.NotificationHelper;
-import com.application.bazouk.whosin.api.UserGroupHelper;
 import com.application.bazouk.whosin.api.UserHelper;
 import com.application.bazouk.whosin.models.Notification;
-import com.application.bazouk.whosin.models.User;
-import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
-import com.application.bazouk.whosin.models.presencegroup.NotificationPresenceGroupBaseDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;

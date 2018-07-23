@@ -1,7 +1,5 @@
 package com.application.bazouk.whosin.models;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Notification {
 

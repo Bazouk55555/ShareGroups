@@ -13,10 +13,6 @@ import com.application.bazouk.whosin.R;
 import com.application.bazouk.whosin.api.NotificationHelper;
 import com.application.bazouk.whosin.api.UserGroupHelper;
 import com.application.bazouk.whosin.connectionpages.ConnectionPage;
-import com.application.bazouk.whosin.groupes.PresenceGroup;
-import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
-import com.application.bazouk.whosin.models.presencegroup.NotificationPresenceGroupBaseDAO;
-import com.application.bazouk.whosin.models.presencegroup.PresenceGroupBaseDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -104,14 +100,6 @@ public class NotificationPage extends AppCompatActivity {
                 });
 
         setToolbar();
-    }
-
-    private void removeMemberFromNotification(String username, int id)
-    {
-        NotificationPresenceGroupBaseDAO notificationPresenceGroupBaseDAO= new NotificationPresenceGroupBaseDAO(this);
-        notificationPresenceGroupBaseDAO.open();
-        notificationPresenceGroupBaseDAO.removeMember(id,username);
-        notificationPresenceGroupBaseDAO.close();
     }
 
     private void setToolbar()

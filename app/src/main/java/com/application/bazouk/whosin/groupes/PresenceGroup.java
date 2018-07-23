@@ -18,16 +18,9 @@ import com.application.bazouk.whosin.mainpages.MainPage;
 import com.application.bazouk.whosin.mainpages.NotificationPage;
 import com.application.bazouk.whosin.mainpages.ProfilePage;
 import com.application.bazouk.whosin.mainpages.AllTheGroupsPage;
-import com.application.bazouk.whosin.models.UserGroup;
-import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
-import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
@@ -60,8 +53,8 @@ public class PresenceGroup extends AppCompatActivity {
                         for(int i =0; i<((List<String>)document.getData().get("names")).size();i++)
                         {
                             CheckBox checkBox = addCheckBox(((List<String>) document.getData().get("names")).get(i));
-                            setCheckBox(checkBox, id, i, document);
-                            updateCheckBox(checkBox,i,document);
+                            setCheckBox(checkBox, id, i);
+                            updateCheckBox(checkBox,((List<Boolean>) document.getData().get("is_present")).get(i));
                         }
                         updateTitle();
                         findViewById(R.id.add_a_member).setOnClickListener(new View.OnClickListener() {
@@ -82,9 +75,8 @@ public class PresenceGroup extends AppCompatActivity {
         setToolbar();
     }
 
-    private void updateCheckBox(CheckBox checkBox, int i, DocumentSnapshot document)
+    private void updateCheckBox(CheckBox checkBox, Boolean isPresent)
     {
-        boolean isPresent = ((List<Boolean>) document.getData().get("is_present")).get(i);
         checkBox.setChecked(isPresent);
         if(isPresent)
         {
@@ -134,7 +126,7 @@ public class PresenceGroup extends AppCompatActivity {
         }
     }
 
-    private void setCheckBox(final CheckBox checkBox, final String id, final int i, final DocumentSnapshot document)
+    private void setCheckBox(final CheckBox checkBox, final String id, final int i)
     {
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,17 +135,31 @@ public class PresenceGroup extends AppCompatActivity {
                 {
                     numberOfPresence++;
                     updateTitle();
-                    List<Boolean> isPresent = (List<Boolean>)document.getData().get("is_present");
-                    isPresent.set(i,true);
-                    UserGroupHelper.updateUserGroupPresence(id,isPresent);
+                    UserGroupHelper.getUserGroup(id).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<Boolean> isPresent = (List<Boolean>)task.getResult().getData().get("is_present");
+                                isPresent.set(i, true);
+                                UserGroupHelper.updateUserGroupPresence(id, isPresent);
+                            }
+                        }
+                    });
                 }
                 else
                 {
                     numberOfPresence--;
                     updateTitle();
-                    List<Boolean> isPresent = (List<Boolean>)document.getData().get("is_present");
-                    isPresent.set(i,false);
-                    UserGroupHelper.updateUserGroupPresence(id,isPresent);
+                    UserGroupHelper.getUserGroup(id).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<Boolean> isPresent = (List<Boolean>)task.getResult().getData().get("is_present");
+                                isPresent.set(i, false);
+                                UserGroupHelper.updateUserGroupPresence(id, isPresent);
+                            }
+                        }
+                    });
                 }
             }
         });

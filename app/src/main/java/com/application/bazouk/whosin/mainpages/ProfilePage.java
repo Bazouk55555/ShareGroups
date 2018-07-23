@@ -5,29 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.application.bazouk.whosin.R;
 import com.application.bazouk.whosin.api.UserGroupHelper;
 import com.application.bazouk.whosin.api.UserHelper;
 import com.application.bazouk.whosin.connectionpages.ConnectionPage;
-import com.application.bazouk.whosin.groupes.PresenceGroup;
-import com.application.bazouk.whosin.models.connection.ConnectionBaseDAO;
-import com.application.bazouk.whosin.models.presencegroup.GroupsOfUsernamesBaseDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import static com.application.bazouk.whosin.connectionpages.ConnectionPage.NAME;
 import static com.application.bazouk.whosin.connectionpages.ConnectionPage.editor;
@@ -56,13 +46,13 @@ public class ProfilePage extends AppCompatActivity {
                     }
                 });
 
-        final EditText nameEditText = (EditText)findViewById(R.id.name);
-        final Button modifyButton = (Button)findViewById(R.id.modify);
+        final EditText nameEditText = findViewById(R.id.name);
+        final Button modifyButton = findViewById(R.id.modify);
 
         findViewById(R.id.modify).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final LinearLayout linearLayoutButtons = ((LinearLayout)findViewById(R.id.layout_buttons));
+                final LinearLayout linearLayoutButtons = findViewById(R.id.layout_buttons);
                 nameEditText.setFocusable(true);
                 nameEditText.setClickable(true);
                 nameEditText.setFocusableInTouchMode(true);
